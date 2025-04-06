@@ -13,11 +13,15 @@ public class Main { // Classe principal onde o programa começa sua execução
         // Usa o método criarPersonagem() para gerar um objeto da subclasse correspondente (no caso, Mecanico)
         Personagem personagem = selecao.criarPersonagem();
 
+        System.out.println();
+
         // Exibe no console o nome do personagem criado
         System.out.println("Personagem criado: " + personagem.getNome());
 
         // Exibe no console o valor inicial de vida do personagem
         System.out.println("Vida inicial: " + personagem.getVida());
+
+        new Jogo().iniciarAmbientes();
     }
 }
 
