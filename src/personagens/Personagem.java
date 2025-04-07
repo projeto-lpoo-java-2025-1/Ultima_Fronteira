@@ -1,6 +1,6 @@
 package personagens; // Define que esta classe pertence ao pacote itens
 
-import personagens.Item; // Importa a classe Item do pacote personagens, necessária para manipular personagens no inventário
+import itens.Item; // Importa a classe Item do pacote itens, necessária para manipular personagens no inventário
 import java.util.ArrayList; // Importa a classe ArrayList, usada para criar listas dinâmicas em Java
 
 public class Personagem { // Declaração da classe Personagem
