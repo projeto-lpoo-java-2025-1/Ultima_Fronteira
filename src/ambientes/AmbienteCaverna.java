@@ -7,7 +7,7 @@ public class AmbienteCaverna extends Ambiente { // Cria uma subclasse que herda 
 
     // Atributos específicos do ambiente caverna
     private boolean poucaLuz;
-    private List<String> criaturasDesconhecidas;
+    private String criaturasDesconhecidas;
     private boolean aguaGotejamento;
 
     public AmbienteCaverna() {
@@ -21,18 +21,18 @@ public class AmbienteCaverna extends Ambiente { // Cria uma subclasse que herda 
 
         // Define os atributos específicos do ambiente
         this.poucaLuz=true;
-        this.criaturasDesconhecidas = new java.util.ArrayList<>();
+        this.criaturasDesconhecidas=criaturasDesconhecidas;
         this.aguaGotejamento=true;
     }
 
     // Métodos que permitem acessar os valores dos atributos
-    public boolean getPoucaLuz(){
+    public boolean isPoucaLuz(){
         return poucaLuz;
     }
-    public List<String> getCriaturasDesconhecidas(){
+    public String getCriaturasDesconhecidas(){
         return criaturasDesconhecidas;
     }
-    public boolean getAguaGotejamento(){
+    public boolean isAguaGotejamento(){
         return aguaGotejamento;
     }
 }

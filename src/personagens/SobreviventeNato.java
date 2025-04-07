@@ -1,6 +1,5 @@
 package personagens; // Define que esta classe pertence ao pacote 'itens'
 
-
 import java.util.ArrayList; // Importa a classe ArrayList, usada como tipo do inventário do personagem
 
 // A classe SobreviventeNato é uma subclasse da classe Personagem

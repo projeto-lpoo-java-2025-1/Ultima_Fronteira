@@ -26,7 +26,6 @@ public class Personagem { // Declaração da classe Personagem
         this.inventario = new ArrayList<>();
         this.localizacao = localizacao;
 
-
     }
 
     //metodos getters
