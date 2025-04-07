@@ -2,9 +2,9 @@ package ambientes;
 
 public class AmbienteLagoRio extends Ambiente {
 
-    public String aguaAbundante;
-    public boolean possibilidadePesca;
-    public boolean terrenoLamacento;
+    private String aguaAbundante;
+    private boolean possibilidadePesca;
+    private boolean terrenoLamacento;
 
     public AmbienteLagoRio(){
         super("Lago e Rio",
