@@ -2,6 +2,8 @@ package itens; // Define que esta classe pertence ao pacote 'itens'
 
 //Imports necessarios para ter relação direta com criaturas
 
+import eventos.EventoCriatura;
+
 // A classe Arma é uma subclasse da classe Item
 public class Arma extends Item{
     private String tipo;
