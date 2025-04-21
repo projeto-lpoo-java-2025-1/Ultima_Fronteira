@@ -3,9 +3,10 @@ package itens; // Define que esta classe pertence ao pacote 'itens'
 //Imports necessarios para ter relação direta com criaturas
 
 import eventos.EventoCriatura;
+import personagens.Personagem;
 
 // A classe Arma é uma subclasse da classe Item
-public class Arma extends Item{
+public abstract class Arma extends Item{
     private String tipo;
     private double dano;
     private double distancia;
@@ -53,6 +54,10 @@ public class Arma extends Item{
         } else {
             System.out.println("A arma está quebrada e não pode ser usada.");
         }
+    }
+
+    public void usar(Personagem personagem, EventoCriatura inimigo) {
+        atacar(inimigo);
     }
 
 }
