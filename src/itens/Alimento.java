@@ -3,7 +3,7 @@ package itens; // Define que esta classe pertence ao pacote 'itens'
 import personagens.Personagem; // Importa a classe Personagem para poder usá-la no método consumir
 
 // A classe é uma subclasse da classe Item
-public class Alimento extends Item{
+public abstract class Alimento extends Item{
     private int valornutricional;
     private String tipo;
     private int prazodevalidade;
@@ -46,6 +46,10 @@ public class Alimento extends Item{
     public void consumir(Personagem personagem){
         personagem.recuperacaodeFome(valornutricional);
         System.out.println(personagem.getNome() + " consumiu " + getNome() + " e recuperou " + valornutricional + " de fome.");
+    }
+
+    public void usar(Personagem personagem) {
+        consumir(personagem);
     }
 
 }
