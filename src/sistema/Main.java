@@ -1,5 +1,6 @@
 package sistema; // Define que esta classe faz parte do pacote 'sistema'
 
+import personagens.Inventario;
 import personagens.Personagem; // Importa a classe Personagem para poder declarar variáveis desse tipo
 
 public class Main { // Classe principal onde o programa começa sua execução
@@ -20,6 +21,9 @@ public class Main { // Classe principal onde o programa começa sua execução
 
         // Exibe no console o valor inicial de vida do personagem
         System.out.println("Vida inicial: " + personagem.getVida());
+
+        Inventario inventario = new Inventario(40); // Capacidade máxima de 50 unidades de peso
+        personagem.setInventario(inventario); // Atribui o inventário ao personagem
 
         new Jogo().iniciarAmbientes();
     }
