@@ -1,7 +1,9 @@
 package itens; // Define que esta classe pertence ao pacote 'itens'
 
+import personagens.Personagem;
+
 // Declaração da classe pública 'Item'
-public class Item {
+public abstract class Item {
     private String nome;
     private int peso;
     private int durabilidade;
@@ -39,4 +41,5 @@ public class Item {
         this.durabilidade = durabilidade;
     }
 
+    public abstract void usar(Personagem personagem);
 }
