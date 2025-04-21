@@ -4,7 +4,7 @@ import personagens.Personagem; // Importa a classe Personagem para poder usá-la
 
 
 // A classe Agua é uma subclasse da classe Item
-public class Agua extends Item{
+public abstract class Agua extends Item{
     private String pureza;
     private int volume;
 
@@ -37,5 +37,9 @@ public class Agua extends Item{
     public void beber(Personagem personagem){
         personagem.recuperacaodeSede(volume);
         System.out.println(personagem.getNome() + " bebeu " + getNome() + " e recuperou " + volume + " de sede.");
+    }
+
+    public void usar(Personagem personagem) {
+        beber(personagem);
     }
 }
