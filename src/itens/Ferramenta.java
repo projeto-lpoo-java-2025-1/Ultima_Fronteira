@@ -2,8 +2,10 @@ package itens;// Define que esta classe pertence ao pacote 'itens'
 
 //Imports necessarios
 
+import personagens.Personagem;
+
 // A classe Ferramenta é uma subclasse da classe Item
-public class Ferramenta extends Item{
+public abstract class Ferramenta extends Item{
     private String tipo;
     private int eficiencia;
 
@@ -33,10 +35,9 @@ public class Ferramenta extends Item{
     }
 
     //Método usar
-    public void usar(){
+    public void usar(Personagem personagem){
         setDurabilidade(getDurabilidade() - 1);
         System.out.println("Você usou a ferramenta: " + getNome());
     }
-
 
 }
