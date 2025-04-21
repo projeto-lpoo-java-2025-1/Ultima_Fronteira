@@ -2,6 +2,8 @@ package personagens; // Define que esta classe pertence ao pacote itens
 
 import itens.Item; // Importa a classe Item do pacote itens, necessária para manipular personagens no inventário
 import java.util.ArrayList; // Importa a classe ArrayList, usada para criar listas dinâmicas em Java
+import personagens.Inventario;
+
 
 public class Personagem { // Declaração da classe Personagem
 
@@ -12,18 +14,18 @@ public class Personagem { // Declaração da classe Personagem
     private int sede;
     private int energia;
     private int sanidade;
-    private ArrayList<Item> inventario;
+    private Inventario inventario;
     private String localizacao;
 
     // Construtor
-    public Personagem(String nome,int vida, int fome, int sede, int energia, int sanidade, ArrayList inventario, String localizacao){
+    public Personagem(String nome,int vida, int fome, int sede, int energia, int sanidade, String localizacao){
         this.nome = nome;
         this.vida = vida;
         this.fome = fome;
         this.sede = sede;
         this.energia = energia;
         this.sanidade = sanidade;
-        this.inventario = new ArrayList<>();
+        this.inventario = new Inventario(40);
         this.localizacao = localizacao;
 
     }
@@ -53,7 +55,7 @@ public class Personagem { // Declaração da classe Personagem
         return sanidade;
     }
 
-    public ArrayList<Item> getInventario(){
+    public Inventario getInventario(){
         return inventario;
     }
 
@@ -86,9 +88,10 @@ public class Personagem { // Declaração da classe Personagem
         this.sanidade = sanidade;
     }
 
-    public void setInventario(ArrayList inventario) {
+    public void setInventario(Inventario inventario) {
         this.inventario = inventario;
     }
+
 
     public void setLocalizacao(String localizacao) {
         this.localizacao = localizacao;
