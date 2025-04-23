@@ -2,6 +2,7 @@ package eventos;
 
 import java.util.Arrays;
 import java.util.List;
+import personagens.*;
 
 
 public class EventoDoencaFerimento extends Evento{
@@ -32,6 +33,35 @@ public class EventoDoencaFerimento extends Evento{
         return curaDisponivel;
     }
 
+    @Override
+    public void executar(Personagem personagem) {
+        System.out.println("\n[EVENTO DE DOENÇA OU FERIMENTO]");
+        System.out.println("Nome: " + getNomeEvento());
+        System.out.println("Descrição: " + getDescricaoEvento());
+        System.out.println("Condições: " + tipoCondicao);
+        System.out.println("Impactos: " + tipoImpacto);
+        System.out.println("Cura disponível: " + curaDisponivel);
 
-
+        // Exemplos de impacto
+        for (String impacto : tipoCondicao) {
+            switch (impacto.toLowerCase()) {
+                case "hipotermia":
+                    personagem.reducaodeVida(10);
+                    break;
+                case "infecção":
+                    personagem.reducaodeVida(15);
+                    personagem.setEnergia(personagem.getEnergia() - 10);
+                    break;
+                case "desidratação":
+                    personagem.setSede(40);
+                    personagem.setSanidade(personagem.getSanidade() - 10);
+                    break;
+                case "fratura":
+                    personagem.setEnergia(personagem.getEnergia() - 20);
+                    break;
+                default:
+                    System.out.println("Condição não reconhecida: " + impacto);
+            }
+        }
+    }
 }
