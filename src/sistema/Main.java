@@ -7,25 +7,13 @@ public class Main { // Classe principal onde o programa começa sua execução
 
     public static void main(String[] args) { // Método main: ponto de entrada da aplicação Java
 
-        // Cria uma instância da classe SelecaoDePersonagem passando o nome "Diego" e a classe escolhida "mecanico"
-        // Isso simula o processo de seleção de personagem no início do jogo
-        SelecaoDePersonagem selecao = new SelecaoDePersonagem("Adam", "mecanico");
+        Jogo jogo = new Jogo();
 
-        // Usa o método criarPersonagem() para gerar um objeto da subclasse correspondente (no caso, Mecanico)
-        Personagem personagem = selecao.criarPersonagem();
-
-        System.out.println();
-
-        // Exibe no console o nome do personagem criado
-        System.out.println("Personagem criado: " + personagem.getNome());
-
-        // Exibe no console o valor inicial de vida do personagem
-        System.out.println("Vida inicial: " + personagem.getVida());
-
-        Inventario inventario = new Inventario(40); // Capacidade máxima de 50 unidades de peso
-        personagem.setInventario(inventario); // Atribui o inventário ao personagem
-
-        new Jogo().iniciarAmbientes();
+        jogo.iniciarAmbientes();
+        jogo.ocorrerEventoClimatico();
+        jogo.ocorrerEventoCriatura();
+        jogo.ocorrerEventoDoencaFerimento();
+        jogo.ocorrerEventoDescoberta();
     }
 }
 
