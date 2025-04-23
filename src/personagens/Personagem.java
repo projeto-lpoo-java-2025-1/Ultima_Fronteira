@@ -17,8 +17,10 @@ public class Personagem { // Declaração da classe Personagem
     private Inventario inventario;
     private String localizacao;
 
+    //private double temperaturaCorporal=36.5;
+
     // Construtor
-    public Personagem(String nome,int vida, int fome, int sede, int energia, int sanidade, String localizacao){
+    public Personagem(String nome,int vida, int fome, int sede, int energia, int sanidade, ArrayList inventario, String localizacao){
         this.nome = nome;
         this.vida = vida;
         this.fome = fome;
@@ -62,6 +64,11 @@ public class Personagem { // Declaração da classe Personagem
     public String getLocalizacao() {
         return localizacao;
     }
+
+   /* public double getTemperaturaCorporal(){
+        return temperaturaCorporal;
+    }
+    */
 
     // Métodos setters
     public void setNome(String nome){
@@ -131,4 +138,14 @@ public class Personagem { // Declaração da classe Personagem
         this.energia = Math.min(100, this.energia + quantidade);
     }
 
+
+
+   /* public void reduzirTemperatura(double valor) {
+        temperaturaCorporal -= valor;
+        if (temperaturaCorporal < 30.0) {
+            temperaturaCorporal = Math.max(temperaturaCorporal, 28.0); // limite de segurança
+            //verificarHipotermia();  // chama verificação automática
+        }
+    }
+    */
 }

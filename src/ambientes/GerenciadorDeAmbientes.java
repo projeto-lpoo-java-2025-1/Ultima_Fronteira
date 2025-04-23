@@ -1,5 +1,7 @@
 package ambientes;
 
+import personagens.Personagem;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,20 +36,22 @@ public class GerenciadorDeAmbientes {
         return ambienteAtual;
     }
 
-    public void mudarAmbiente(Ambiente novoAmbiente) {
+    public void mudarAmbiente(Ambiente novoAmbiente, Personagem personagem) {
         if (ambienteAtual.equals(novoAmbiente)) {
             System.out.println();
             System.out.println("Você já está no ambiente " + ambienteAtual.getNomeAmbiente() + "!");
             return;
         }
         System.out.println();
-        System.out.println("Você está deixando: " + ambienteAtual.getNomeAmbiente());
+        System.out.println("[VOCÊ ESTÁ DEIXANDO] " + ambienteAtual.getNomeAmbiente());
         System.out.println();
-        System.out.println("Indo para: " + novoAmbiente.getNomeAmbiente());
+        System.out.println("[INDO PARA] " + novoAmbiente.getNomeAmbiente());
         System.out.println(novoAmbiente.getDescricaoAmbiente());
 
         historicoMovimentacao.add("Saiu de " + ambienteAtual.getNomeAmbiente() + " para " + novoAmbiente.getNomeAmbiente());
         ambienteAtual = novoAmbiente;
+        personagem.setLocalizacao(ambienteAtual.getNomeAmbiente());
+
     }
 
     public void gerarEvento(){

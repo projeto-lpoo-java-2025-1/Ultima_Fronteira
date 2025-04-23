@@ -1,5 +1,7 @@
 package eventos;
 
+import personagens.Personagem;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public abstract class Evento {
         return condicaoAtivacao;
     }
 
-    public void executar(){
+    public void executar(Personagem personagem){
 
     }
 
