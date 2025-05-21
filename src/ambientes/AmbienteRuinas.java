@@ -12,7 +12,8 @@ public class AmbienteRuinas extends Ambiente{
                 3,
             new String[]{"Ferramentas antigas", "Munição", "Alimentos enlatados", "Mapas e pistas sobre o ambiente"},
                 0.6,
-                "Ventos uivantes");
+                "Ventos uivantes"
+        );
 
         this.estruturaInstavel=true;
         this.outrosSobreviventes=true;
@@ -27,5 +28,13 @@ public class AmbienteRuinas extends Ambiente{
     }
     public boolean isBaixoRiscoClimatico() {
         return baixoRiscoClimatico;
+    }
+
+    public void gerarEvento(){
+
+    }
+
+    public void modificarClima(){
+
     }
 }

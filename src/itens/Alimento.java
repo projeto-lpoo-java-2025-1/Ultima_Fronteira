@@ -1,55 +1,54 @@
-package itens; // Define que esta classe pertence ao pacote 'itens'
+package itens;
 
-import personagens.Personagem; // Importa a classe Personagem para poder usá-la no método consumir
+import exceptions.FomeCheiaException;
+import personagens.Personagem;
 
-// A classe é uma subclasse da classe Item
-public abstract class Alimento extends Item{
+public class Alimento extends Item {
     private int valornutricional;
     private String tipo;
     private int prazodevalidade;
 
-    //Construtor
-    public Alimento(String nome, int peso, int durabilidade, String tipo, int valornutricional, int prazodevalidade){
+    public Alimento(String nome, int peso, int durabilidade, String tipo, int valornutricional, int prazodevalidade) {
         super(nome, peso, durabilidade);
         this.valornutricional = valornutricional;
         this.tipo = tipo;
         this.prazodevalidade = prazodevalidade;
     }
 
-    //Método getters
-    public int getValorNutricional(){
+    public int getValorNutricional() {
         return valornutricional;
     }
 
-    public String getTipo(){
+    public String getTipo() {
         return tipo;
     }
 
-    public int getPrazodeValidade(){
+    public int getPrazodeValidade() {
         return prazodevalidade;
     }
 
-    //Método Setters
-    public void setValorNutricional(int valornutricional){
+    public void setValorNutricional(int valornutricional) {
         this.valornutricional = valornutricional;
     }
 
-    public void setTipo(String tipo){
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
-    public void setPrazodeValidade(int prazodevalidade){
+    public void setPrazodeValidade(int prazodevalidade) {
         this.prazodevalidade = prazodevalidade;
     }
 
-    //Método Consumir
-    public void consumir(Personagem personagem){
-        personagem.recuperacaodeFome(valornutricional);
-        System.out.println(personagem.getNome() + " consumiu " + getNome() + " e recuperou " + valornutricional + " de fome.");
+    public String consumir(Personagem personagem) {
+        if (personagem.getFome() >= 100) {
+            throw new FomeCheiaException(personagem.getNome() + " já está com a fome totalmente saciada.");
+        }
+        personagem.recuperarFome(valornutricional);
+        return personagem.getNome() + " consumiu " + getNome() + " e recuperou " + valornutricional + " de fome.";
     }
 
+    @Override
     public void usar(Personagem personagem) {
         consumir(personagem);
     }
-
 }

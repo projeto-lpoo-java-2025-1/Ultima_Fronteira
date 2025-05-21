@@ -1,44 +1,43 @@
-package itens; // Define que esta classe pertence ao pacote 'itens'
+package itens;
 
-import personagens.Personagem; // Importa a classe Personagem para poder usá-la no método beber
+import exceptions.SedeCheiaException;
+import personagens.Personagem;
 
-
-// A classe Agua é uma subclasse da classe Item
-public abstract class Agua extends Item{
+public class Agua extends Item {
     private String pureza;
     private int volume;
 
-    //Construtor
-    public Agua(String nome, int peso, int durabilidade, String pureza, int volume){
+    public Agua(String nome, int peso, int durabilidade, String pureza, int volume) {
         super(nome, peso, durabilidade);
         this.pureza = pureza;
         this.volume = volume;
     }
 
-    //Método getters
-    public String getPureza(){
+    public String getPureza() {
         return pureza;
     }
 
-    public int getVolume(){
+    public int getVolume() {
         return volume;
     }
 
-    //Método Setters
-    public void setPureza(String pureza){
+    public void setPureza(String pureza) {
         this.pureza = pureza;
     }
 
-    public void setVolume(int volume){
+    public void setVolume(int volume) {
         this.volume = volume;
     }
 
-    //Método beber
-    public void beber(Personagem personagem){
-        personagem.recuperacaodeSede(volume);
-        System.out.println(personagem.getNome() + " bebeu " + getNome() + " e recuperou " + volume + " de sede.");
+    public String beber(Personagem personagem) {
+        if (personagem.getSede() >= 100) {
+            throw new SedeCheiaException(personagem.getNome() + " já está com a sede cheia.");
+        }
+        personagem.recuperarSede(volume);
+        return personagem.getNome() + " bebeu " + getNome() + " e recuperou " + volume + " de sede.";
     }
 
+    @Override
     public void usar(Personagem personagem) {
         beber(personagem);
     }

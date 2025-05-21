@@ -1,8 +1,5 @@
 package ambientes;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class AmbienteMontanha extends Ambiente {
 
     private boolean terrenoAcidentado;
@@ -10,12 +7,14 @@ public class AmbienteMontanha extends Ambiente {
     private String baixaVegetacao;
 
     public AmbienteMontanha(){
+
         super("Montanha",
                 "Uma região de difícil acesso, mas rica em minérios e pedras preciosas",
                 4,
                 new String[]{"Rochas", "Minérios raros", "Pequenos lagos subterrâneos", "Ossos", "Vestígios de exploradores antigos"},
                 1,
-                "Instável");
+                "Instável"
+        );
 
         this.terrenoAcidentado=true;
         this.climaInstavel=climaInstavel;
@@ -30,5 +29,13 @@ public class AmbienteMontanha extends Ambiente {
     }
     public String getBaixaVegetacao(){
         return baixaVegetacao;
+    }
+
+    public void gerarEvento(){
+
+    }
+
+    public void modificarClima(){
+
     }
 }

@@ -1,8 +1,5 @@
 package ambientes; // Define que a classe 'Ambiente' pertence ao pacote 'ambientes'
 
-import java.util.Arrays;
-import java.util.List;
-
 public class AmbienteCaverna extends Ambiente { // Cria uma subclasse que herda os atributos e métodos da classe abstrata 1Ambientes'
 
     // Atributos específicos do ambiente caverna
@@ -17,7 +14,8 @@ public class AmbienteCaverna extends Ambiente { // Cria uma subclasse que herda 
                 3,
                 new String[]{"Rochas", "Minérios raros", "Pequenos lagos subterrâneos", "Ossos", "Vestígios de exploradores antigos"},
                 0.6,
-                "Frias");
+                "Frias"
+        );
 
         // Define os atributos específicos do ambiente
         this.poucaLuz=true;
@@ -35,6 +33,15 @@ public class AmbienteCaverna extends Ambiente { // Cria uma subclasse que herda 
     public boolean isAguaGotejamento(){
         return aguaGotejamento;
     }
+
+    public void gerarEvento(){
+
+    }
+
+    public void modificarClima(){
+
+    }
+
 }
 
 

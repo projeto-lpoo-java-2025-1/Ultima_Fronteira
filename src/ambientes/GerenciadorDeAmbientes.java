@@ -50,6 +50,7 @@ public class GerenciadorDeAmbientes {
 
         historicoMovimentacao.add("Saiu de " + ambienteAtual.getNomeAmbiente() + " para " + novoAmbiente.getNomeAmbiente());
         ambienteAtual = novoAmbiente;
+
         personagem.setLocalizacao(ambienteAtual.getNomeAmbiente());
 
     }

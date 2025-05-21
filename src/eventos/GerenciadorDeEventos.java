@@ -1,20 +1,20 @@
 package eventos;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class GerenciadorDeEventos {
 
-    private List<Evento> eventosPossiveis;
+    private List<String> eventosPossiveis;
     private int frequenciaEventos;
 
-    public GerenciadorDeEventos(Evento[] eventos, int frequenciaEventos) {
-        this.eventosPossiveis = Arrays.asList(eventos);  // Agora é uma lista de Eventos
-        this.frequenciaEventos = frequenciaEventos;
+    public GerenciadorDeEventos(String[] eventos, int frequenciaEventos){
+        this.eventosPossiveis= Arrays.asList(eventos);
+        this.frequenciaEventos=frequenciaEventos;
+
     }
 
-    public List<Evento> getEventosPossiveis(){
+    public List<String> getEventosPossiveis(){
         return eventosPossiveis;
     }
 

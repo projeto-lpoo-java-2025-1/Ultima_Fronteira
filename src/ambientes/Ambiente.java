@@ -1,6 +1,6 @@
 package ambientes; // Define que a classe 'Ambiente' pertence ao pacote 'ambientes'
 
-import eventos.Evento; // Importa a classe 'Evento' que fica no pacote 'eventos'
+import eventos.Evento;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +17,8 @@ public abstract class Ambiente { // Define a classe abstrata 'Ambiente' que serv
     private List<Evento> eventosPossiveis;
 
 
+
+
     // Construtor que inicializa os atributos do ambiente
     public Ambiente(String nomeAmbiente, String descricaoAmbiente, int dificuldadeExploracao, String[] recursos, double probabilidadeEventos, String condicoesClimaticas){
         this.nomeAmbiente=nomeAmbiente;
@@ -26,6 +28,8 @@ public abstract class Ambiente { // Define a classe abstrata 'Ambiente' que serv
         this.probabilidadeEventos=probabilidadeEventos;
         this.condicoesClimaticas=condicoesClimaticas;
     }
+
+
 
     // Métodos que permitem acessar os valores dos atributos
     public String getNomeAmbiente(){
@@ -53,11 +57,14 @@ public abstract class Ambiente { // Define a classe abstrata 'Ambiente' que serv
     }
 
 
+    public void setNomeAmbiente(String nomeAmbiente){
+        this.nomeAmbiente=nomeAmbiente;
+    }
     // Métodos que serão construídos em breve
     public void explorar(){
     }
 
-    public void modificarClima(){
-    }
+    public abstract void gerarEvento();
 
+    public abstract void modificarClima();
 }
