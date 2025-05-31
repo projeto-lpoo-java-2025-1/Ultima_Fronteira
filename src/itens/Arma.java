@@ -2,10 +2,10 @@ package itens;
 
 import eventos.EventoCriatura;
 import exceptions.ArmaQuebradaException;
-import interfaces.Atacavel;
+import personagens.Criatura;
 import personagens.Personagem;
 
-public class Arma extends Item implements Atacavel {
+public class Arma extends Item {
     private String tipo;
     private double dano;
     private double distancia;
@@ -16,6 +16,13 @@ public class Arma extends Item implements Atacavel {
         this.tipo = tipo;
         this.dano = dano;
         this.distancia = distancia;
+    }
+
+    public Arma(Arma outraArma) {
+        super(outraArma.getNome(), outraArma.getPeso(), outraArma.getDurabilidade()); // Copia atributos da classe Item
+        this.tipo = outraArma.tipo;
+        this.dano = outraArma.dano;
+        this.distancia = outraArma.distancia;
     }
 
     // Getters e Setters
@@ -52,7 +59,7 @@ public class Arma extends Item implements Atacavel {
     }
 
     // Lógica do ataque
-    public void atacar(EventoCriatura inimigo) {
+    public void atacar(Criatura inimigo) {
         if (getDurabilidade() <= 0) {
             throw new ArmaQuebradaException("A arma está quebrada e não pode ser usada.");
         }
@@ -60,13 +67,14 @@ public class Arma extends Item implements Atacavel {
         setDurabilidade(getDurabilidade() - 1);
     }
 
+
     // Método usar sobrescrito
     @Override
     public void usar(Personagem personagem) {
         if (inimigo == null) {
             throw new IllegalStateException("Nenhum inimigo definido para ataque.");
         }
-        atacar(inimigo); // Lógica do back-end
+        atacar(inimigo.getCriaturaAtual()); // Lógica do back-end
     }
 
     @Override

@@ -44,6 +44,7 @@ public class Alimento extends Item {
             throw new FomeCheiaException(personagem.getNome() + " já está com a fome totalmente saciada.");
         }
         personagem.recuperarFome(valornutricional);
+        personagem.recuperarEnergia(valornutricional);
         return personagem.getNome() + " consumiu " + getNome() + " e recuperou " + valornutricional + " de fome.";
     }
 

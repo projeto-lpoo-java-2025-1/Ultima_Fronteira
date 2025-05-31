@@ -2,6 +2,7 @@ package itens;
 
 import java.util.ArrayList;
 import java.util.List;
+import enums.PurezaAgua;
 
 public class CatalogoDeItens {
 
@@ -30,12 +31,12 @@ public class CatalogoDeItens {
         alimentos.add(new Alimento("Fruta", 1, 30, "Natural", 15, 5));
 
         // Aguas
-        aguas.add(new Agua("Agua Pura", 2, 100, "Limpa", 1000));
-        aguas.add(new Agua("Agua Impura", 2, 80, "Suja", 500));
+        aguas.add(new Agua("Agua Pura", 2, 80, PurezaAgua.PURA , 1000));
+        aguas.add(new Agua("Agua contaminada", 2, 80, PurezaAgua.CONTAMINADA, 500));
 
         // Armas
         armas.add(new Arma("Faca", 2, 30, "Corpo-a-corpo", 15.0, 1.0));
-        armas.add(new Arma("Espada", 3, 50, "Corpo-a-corpo", 25.0, 1.0));
+        armas.add(new Arma("Espada", 3, 50, "Corpo-a-corpo", 25.0, 1.5));
 
         // Ferramentas
         ferramentas.add(new Ferramenta("Machado", 5, 100, "Corte", 80));
@@ -81,4 +82,14 @@ public class CatalogoDeItens {
     public List<Remedio> getRemedios() {
         return remedios;
     }
+
+    public Alimento getAlimentoPorNome(String nome) {
+        for (Alimento alimento : alimentos) {
+            if (alimento.getNome().equalsIgnoreCase(nome)) {
+                return alimento;
+            }
+        }
+        return null; // ou lance exceção, dependendo do que preferir
+    }
+
 }

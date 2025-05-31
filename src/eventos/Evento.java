@@ -1,13 +1,12 @@
 package eventos;
 
 import ambientes.Ambiente;
-import interfaces.AcaoEvento;
 import personagens.Personagem;
 
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Evento implements AcaoEvento {
+public abstract class Evento {
 
     private String nomeEvento;
     private String descricaoEvento;

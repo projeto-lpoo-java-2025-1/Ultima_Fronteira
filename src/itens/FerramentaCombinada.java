@@ -1,10 +1,9 @@
 package itens;
 
 import exceptions.FerramentaQuebradaException;
-import interfaces.AcaoUsar;
 import personagens.Personagem;
 
-public class FerramentaCombinada extends Ferramenta implements AcaoUsar {
+public class FerramentaCombinada extends Ferramenta {
 
     public FerramentaCombinada(String nome, int peso, int durabilidade, String tipo, int eficiencia) {
         super(nome, peso, durabilidade, tipo, eficiencia);

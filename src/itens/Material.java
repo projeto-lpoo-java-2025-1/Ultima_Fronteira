@@ -1,12 +1,11 @@
 package itens;
 
 import exceptions.CombinarException;
-import interfaces.Combinavel;
 import personagens.Personagem;
 
 import java.util.List;
 
-public class Material extends Item implements Combinavel {
+public class Material extends Item {
     private String tipo;
     private int resistencia;
 

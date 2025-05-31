@@ -66,13 +66,6 @@ public class EventoDoencaFerimento {
 
     }
 
-    public void hipotermia() {
-
-
-    }
-
-
-
     public void eventoInfectado() {
 
         String personagem = gp.getPersonagemSelecionado();

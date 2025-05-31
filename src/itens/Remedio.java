@@ -1,10 +1,9 @@
 package itens;
 
 import exceptions.VidaCheiaException;
-import interfaces.AcaoCurar;
 import personagens.Personagem;
 
-public class Remedio extends Item implements AcaoCurar {
+public class Remedio extends Item {
     private String tipo;
     private String efeito;
     private int cura;

@@ -1,28 +1,28 @@
 package itens;
 
+import enums.PurezaAgua;
 import exceptions.SedeCheiaException;
 import personagens.Personagem;
 
 public class Agua extends Item {
-    private String pureza;
+    private PurezaAgua pureza; // Novo
     private int volume;
 
-    public Agua(String nome, int peso, int durabilidade, String pureza, int volume) {
+    public Agua(String nome, int peso, int durabilidade, PurezaAgua pureza, int volume) {
         super(nome, peso, durabilidade);
         this.pureza = pureza;
         this.volume = volume;
     }
 
-    public String getPureza() {
+    public PurezaAgua getPureza() {
         return pureza;
+    }
+    public String getPurezaDescricao() {
+        return pureza.getDescricao();
     }
 
     public int getVolume() {
         return volume;
-    }
-
-    public void setPureza(String pureza) {
-        this.pureza = pureza;
     }
 
     public void setVolume(int volume) {

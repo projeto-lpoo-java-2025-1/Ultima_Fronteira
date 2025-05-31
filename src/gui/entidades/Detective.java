@@ -13,7 +13,7 @@ public class Detective extends Jogador { //
 
     public Detective(PainelJogo gp, EventosTeclado eventosTeclado) {
         super(gp, eventosTeclado);
-        this.rastreador = new Rastreador("Luiz",100, 100, 100, 100, 100, null, "Floresta", 36.5);
+        this.rastreador = new Rastreador("Luiz",100, 100, 100, 100, 100, null, "Floresta", 36.5, 100, 1, false, false, null);
         getImagemJogador();
         //rastreador.exibirStatus();
     }

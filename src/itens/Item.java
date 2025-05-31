@@ -1,10 +1,9 @@
 package itens; // Define que esta classe pertence ao pacote 'itens'
 
-import interfaces.AcaoUsar;
 import personagens.Personagem;
 
 // Declaração da classe pública 'Item'
-public abstract class Item implements AcaoUsar {
+public abstract class Item {
     private String nome;
     private int peso;
     private int durabilidade;

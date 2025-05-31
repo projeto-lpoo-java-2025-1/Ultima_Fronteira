@@ -1,6 +1,6 @@
 package exceptions;
 
-public class EnergiaCheiaException extends Exception {
+public class EnergiaCheiaException extends RuntimeException {
     public EnergiaCheiaException(String mensagem) {
         super(mensagem);
     }

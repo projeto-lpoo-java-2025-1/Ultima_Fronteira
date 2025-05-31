@@ -1,5 +1,7 @@
 package itens;
 
+import exceptions.ReceitaInvalidaException;
+
 import java.util.List;
 
 public class CraftManager {
@@ -29,7 +31,6 @@ public class CraftManager {
         }
 
         // Se não bate com nenhuma receita
-        System.out.println("Receita inválida para combinação!");
-        return null;
+        throw new ReceitaInvalidaException("Receita inválida!");
     }
 }
