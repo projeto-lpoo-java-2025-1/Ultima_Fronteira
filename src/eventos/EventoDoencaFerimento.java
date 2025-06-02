@@ -1,16 +1,10 @@
 package eventos;
 
 import ambientes.Ambiente;
-import personagens.Personagem;
+import personagens.Personagem; // Sua classe Personagem do back-end
 import java.util.Random;
 
 public class EventoDoencaFerimento extends Evento {
-
-    private int contadorDesidratacao = 0;
-    private final int intervaloDesidratacao = 600;
-
-    private int contadorInfeccao = 0;
-    private final int intervaloInfeccao = 100;
 
     public EventoDoencaFerimento(String nomeEvento, String descricaoEvento, int probabilidadeOcorrencia,
                                  String[] impacto, String[] condicaoAtivacao,
@@ -18,71 +12,87 @@ public class EventoDoencaFerimento extends Evento {
         super(nomeEvento, descricaoEvento, probabilidadeOcorrencia, impacto, condicaoAtivacao);
     }
 
-    public String verificarDesidratacao(Personagem personagem) {
-        if (personagem.getSede() <= 2) {
-            personagem.setDesidratado(true);
-        } else {
-            personagem.setDesidratado(false);
-            contadorDesidratacao = 0;
+    @Override
+    public String executar(Personagem personagem, Ambiente local) {
+        String nomeEsteEvento = this.getNomeEvento();
+
+        if (nomeEsteEvento.equalsIgnoreCase("Desidratação")) { // Um evento que PODE causar desidratação
+            if (personagem.getSede() <= 1 && !personagem.isDesidratado()) { // Condição mais severa para um evento "agudo"
+                personagem.setDesidratado(true);
+                String msgDelirio = verificarEAtivarOuDesativarDelirio(personagem);
+                return "A sede extrema o atingiu! Você está gravemente desidratado." + (msgDelirio != null ? " " + msgDelirio : "");
+            }
+            return "Você sente muita sede, mas ainda resiste à desidratação aguda.";
         }
 
-        if (personagem.isDesidratado()) {
-            contadorDesidratacao++;
-            if (contadorDesidratacao >= intervaloDesidratacao) {
-                personagem.setEnergia(personagem.getEnergia() - 1);
-                personagem.setSanidade(Math.max(0, personagem.getSanidade() - 1));
-                contadorDesidratacao = 0;
-                return "DESIDRATAÇÃO: Você perdeu 1 ponto de energia e sanidade.";
+        if (nomeEsteEvento.equalsIgnoreCase("Infecção")) { // Um evento que PODE causar infecção
+            Random random = new Random();
+            if (!personagem.isInfectado() && random.nextInt(100) < 50) {
+                personagem.setInfectado(true);
+                return "Um ferimento piorou rapidamente e infeccionou gravemente!";
             }
         }
-        return null;  // sem efeito
+
+        return getDescricaoEvento() + " (Uma infecção te antigiu!)";
+    }
+
+    public String aplicarEfeitoContinuoDesidratacao(Personagem personagem) {
+        if (personagem.isDesidratado()) {
+            personagem.setEnergia(personagem.getEnergia() - 1);
+            // Sanidade também é afetada, e o delírio é uma consequência direta
+            personagem.setSanidade(Math.max(0, personagem.getSanidade() - 1));
+
+            String msgDelirio = verificarEAtivarOuDesativarDelirio(personagem);
+            String msgPrincipal = "DESIDRATAÇÃO: Sua energia e sanidade continuam diminuindo.";
+
+            return msgPrincipal + (msgDelirio != null ? " " + msgDelirio : "");
+        }
+        else {
+            return verificarEAtivarOuDesativarDelirio(personagem);
+        }
+    }
+
+    public String aplicarEfeitoContinuoInfeccao(Personagem personagem) {
+        if (personagem.isInfectado()) {
+            personagem.setVida(personagem.getVida() - 1);
+            return "INFECÇÃO: A doença consome sua vitalidade, você perdeu 1 de vida.";
+        }
+        return null;
+    }
+
+    private String verificarEAtivarOuDesativarDelirio(Personagem personagem) {
+        boolean condicaoParaDelirio = (personagem.getSanidade() <= 2 || personagem.isDesidratado());
+        boolean estavaDelirando = personagem.isDelirando();
+
+        if (condicaoParaDelirio) {
+            if (!estavaDelirando) {
+                personagem.setDelirando(true);
+                personagem.setVelocidade(1/2);
+                personagem.reduzirSanidade(1);
+                return "Sua mente começa a pregar peças... Você está delirando.";
+            }
+        } else { // Não há mais condição para delírio
+            if (estavaDelirando) {
+                personagem.setDelirando(false);
+                personagem.setVelocidade(personagem.getVelocidade()); // Restaura velocidade no back-end
+                return "Sua mente clareia... O delírio passou.";
+            }
+        }
+        return null;
     }
 
     public String beberAguaContaminada(Personagem personagem) {
         if (personagem.getSede() < personagem.getSedeMaxima()) {
             personagem.setSede(personagem.getSede() + 1);
             Random random = new Random();
-            int chance = random.nextInt(100);
-            if (chance < 60) {
+            if (random.nextInt(100) < 60) {
                 personagem.setInfectado(true);
                 return "Você bebeu água contaminada e foi infectado!";
             } else {
-                return "Você bebeu água contaminada, mas não ficou infectado.";
+                return "Você bebeu água contaminada, mas parece que não foi infectado desta vez.";
             }
         } else {
-            return "Você já está hidratado.";
+            return "Você não está com sede no momento.";
         }
-    }
-
-    public String verificarInfeccao(Personagem personagem) {
-        if (personagem.isInfectado()) {
-            contadorInfeccao++;
-            if (contadorInfeccao >= intervaloInfeccao) {
-                personagem.setVida(personagem.getVida() - 1);
-                contadorInfeccao = 0;
-                return "Você está infectado! Perdeu 1 ponto de vida.";
-            }
-        } else {
-            contadorInfeccao = 0;
-        }
-        return null;
-    }
-
-    public boolean verificarDelirio(Personagem personagem) {
-        if (personagem.getSanidade() <= 2 || personagem.isDesidratado()) {
-            personagem.setVelocidade(1);
-            return true;  // está delirando
-        } else {
-            personagem.setVelocidade(2);
-            return false;  // não está delirando
-        }
-    }
-
-    @Override
-    public void executar(Personagem personagem, Ambiente local) {
-        verificarDesidratacao(personagem);
-        verificarInfeccao(personagem);
-        verificarDelirio(personagem);
-        // A execução pode ser geral, ou guiada por tipos de evento
     }
 }

@@ -179,6 +179,13 @@ public class CatalogoDeEventos {
         ));
     }
 
+    public Evento getEventoPorNome(String nome) {
+        return getTodosEventos().stream()
+                .filter(e -> e.getNomeEvento().equalsIgnoreCase(nome))
+                .findFirst()
+                .orElse(null);
+    }
+
     public List<EventoClimatico> getEventosClimaticos() {
         return eventosClimaticos;
     }

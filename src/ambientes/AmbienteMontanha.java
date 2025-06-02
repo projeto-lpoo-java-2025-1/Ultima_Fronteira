@@ -6,36 +6,40 @@ public class AmbienteMontanha extends Ambiente {
     private String climaInstavel;
     private String baixaVegetacao;
 
-    public AmbienteMontanha(){
-
+    public AmbienteMontanha() {
         super("Montanha",
-                "Uma região de difícil acesso, mas rica em minérios e pedras preciosas",
+                "Uma região de difícil acesso, mas rica em minérios e pedras preciosas.",
                 4,
-                new String[]{"Rochas", "Minérios raros", "Pequenos lagos subterrâneos", "Ossos", "Vestígios de exploradores antigos"},
+                new String[]{"Minérios", "Pedras preciosas", "Água de degelo", "Refúgios naturais"},
                 1,
-                "Instável"
+                "Instável",
+                "/maps/montanha.txt" // Caminho para o layout do mapa
         );
 
-        this.terrenoAcidentado=true;
-        this.climaInstavel=climaInstavel;
-        this.baixaVegetacao=baixaVegetacao;
+        this.terrenoAcidentado = true;
+        this.climaInstavel = "Instável"; // Valor definido
+        this.baixaVegetacao = "Baixa"; // Valor definido
     }
 
     public boolean isTerrenoAcidentado() {
         return terrenoAcidentado;
     }
-    public String getClimaInstavel(){
+
+    public String getClimaInstavel() {
         return climaInstavel;
     }
-    public String getBaixaVegetacao(){
+
+    public String getBaixaVegetacao() {
         return baixaVegetacao;
     }
 
-    public void gerarEvento(){
-
+    @Override
+    public void gerarEvento() {
+        // Lógica futura para eventos específicos da montanha
     }
 
-    public void modificarClima(){
-
+    @Override
+    public void modificarClima() {
+        // Lógica futura para modificação de clima na montanha
     }
 }

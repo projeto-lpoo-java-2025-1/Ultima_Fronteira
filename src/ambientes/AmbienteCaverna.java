@@ -1,47 +1,45 @@
-package ambientes; // Define que a classe 'Ambiente' pertence ao pacote 'ambientes'
+package ambientes;
 
-public class AmbienteCaverna extends Ambiente { // Cria uma subclasse que herda os atributos e métodos da classe abstrata 1Ambientes'
+public class AmbienteCaverna extends Ambiente {
 
-    // Atributos específicos do ambiente caverna
     private boolean poucaLuz;
     private String criaturasDesconhecidas;
     private boolean aguaGotejamento;
 
     public AmbienteCaverna() {
-        // 'super' serve para chamar o construtor da classe 'Ambiente' e passar as informações comuns
         super("Caverna",
-                "Uma abiente subterrâneo que pode oferecer abrigo contra o clima, mas esconde perigos desconhecidos.",
+                "Um ambiente subterrâneo que pode oferecer abrigo contra o clima, mas esconde perigos desconhecidos.",
                 3,
                 new String[]{"Rochas", "Minérios raros", "Pequenos lagos subterrâneos", "Ossos", "Vestígios de exploradores antigos"},
                 0.6,
-                "Frias"
+                "Frio e Úmido",
+                "/maps/caverna.txt" // Caminho para o layout do mapa
         );
 
-        // Define os atributos específicos do ambiente
-        this.poucaLuz=true;
-        this.criaturasDesconhecidas=criaturasDesconhecidas;
-        this.aguaGotejamento=true;
+        this.poucaLuz = true;
+        this.criaturasDesconhecidas = "Presentes"; // Valor definido
+        this.aguaGotejamento = true;
     }
 
-    // Métodos que permitem acessar os valores dos atributos
-    public boolean isPoucaLuz(){
+    public boolean isPoucaLuz() {
         return poucaLuz;
     }
-    public String getCriaturasDesconhecidas(){
+
+    public String getCriaturasDesconhecidas() {
         return criaturasDesconhecidas;
     }
-    public boolean isAguaGotejamento(){
+
+    public boolean isAguaGotejamento() {
         return aguaGotejamento;
     }
 
-    public void gerarEvento(){
-
+    @Override
+    public void gerarEvento() {
+        // Lógica futura para eventos específicos da caverna
     }
 
-    public void modificarClima(){
-
+    @Override
+    public void modificarClima() {
+        // Lógica futura para modificação de clima na caverna
     }
-
 }
-
-

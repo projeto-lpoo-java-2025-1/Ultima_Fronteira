@@ -1,6 +1,6 @@
 package ambientes;
 
-public class AmbienteRuinas extends Ambiente{
+public class AmbienteRuinas extends Ambiente {
 
     private boolean estruturaInstavel;
     private boolean outrosSobreviventes;
@@ -10,31 +10,36 @@ public class AmbienteRuinas extends Ambiente{
         super("Ruinas",
                 "Restos de antigas construções que podem conter suprimentos valiosos ou armadilhas.",
                 3,
-            new String[]{"Ferramentas antigas", "Munição", "Alimentos enlatados", "Mapas e pistas sobre o ambiente"},
+                new String[]{"Ferramentas antigas", "Munição", "Alimentos enlatados", "Mapas e pistas sobre o ambiente"},
                 0.6,
-                "Ventos uivantes"
+                "Ventos uivantes",
+                "/maps/ruinas.txt" // Caminho para o layout do mapa
         );
 
-        this.estruturaInstavel=true;
-        this.outrosSobreviventes=true;
-        this.baixoRiscoClimatico=true;
+        this.estruturaInstavel = true;
+        this.outrosSobreviventes = true;
+        this.baixoRiscoClimatico = true;
     }
 
-    public boolean isEstruturaInstavel(){
+    public boolean isEstruturaInstavel() {
         return estruturaInstavel;
     }
+
     public boolean isOutrosSobreviventes() {
         return outrosSobreviventes;
     }
+
     public boolean isBaixoRiscoClimatico() {
         return baixoRiscoClimatico;
     }
 
-    public void gerarEvento(){
-
+    @Override
+    public void gerarEvento() {
+        // Lógica futura para eventos específicos das ruínas
     }
 
-    public void modificarClima(){
-
+    @Override
+    public void modificarClima() {
+        // Lógica futura para modificação de clima nas ruínas
     }
 }

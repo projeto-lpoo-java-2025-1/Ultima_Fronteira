@@ -1,90 +1,86 @@
 package eventos;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+import java.util.stream.Collectors;
 import ambientes.Ambiente;
 import personagens.Personagem;
 import itens.CatalogoDeItens;
 
 public class GerenciadorDeEventos {
 
-    private List<Evento> eventosPossiveis;
-    private int probabilidadeOcorrencia;
-    private List<Evento> historicoEventos;
+    private CatalogoDeEventos catalogoDeEventos;
     private Random random;
 
-    // Referência para o catálogo de eventos
-    private CatalogoDeEventos catalogoDeEventos;
+    private int contadorClimatico;
+    private int contadorDoenca;
 
-    public GerenciadorDeEventos(int probabilidadeOcorrencia, CatalogoDeItens catalogoItens) {
-        this.eventosPossiveis = new ArrayList<>();
-        this.probabilidadeOcorrencia = probabilidadeOcorrencia;
-        this.historicoEventos = new ArrayList<>();
-        this.random = new Random();
+    private final int INTERVALO_VERIFICACAO_CLIMA = 1200;
+    private final int INTERVALO_VERIFICACAO_DOENCA = 600;
 
-        // Cria o catálogo de eventos passando o catálogo de itens
+    public GerenciadorDeEventos(CatalogoDeItens catalogoItens) {
         this.catalogoDeEventos = new CatalogoDeEventos(catalogoItens);
-
-        // Inicializa eventos possíveis com todos os eventos do catálogo
-        inicializarEventosPossiveis();
+        this.random = new Random();
+        this.contadorClimatico = 0;
+        this.contadorDoenca = 0;
     }
 
-    private void inicializarEventosPossiveis() {
-        eventosPossiveis.clear();
-        eventosPossiveis.addAll(catalogoDeEventos.getEventosClimaticos());
-        eventosPossiveis.addAll(catalogoDeEventos.getEventosDescoberta());
-        eventosPossiveis.addAll(catalogoDeEventos.getEventosDoencaFerimento());
-        eventosPossiveis.addAll(catalogoDeEventos.getEventosCriatura());
-    }
+    public String processarEventosPeriodicos(Personagem personagem, Ambiente ambiente) {
+        String resultadoEvento = null;
 
-    public void adicionarEvento(Evento evento) {
-        eventosPossiveis.add(evento);
-    }
+        // Processa Eventos Climáticos
+        contadorClimatico++;
+        if (contadorClimatico >= INTERVALO_VERIFICACAO_CLIMA) {
+            contadorClimatico = 0;
+            resultadoEvento = sortearEExecutarEvento(personagem, ambiente, EventoClimatico.class);
+            if (resultadoEvento != null) return resultadoEvento;
+        }
 
-    public Evento sortearEvento(Ambiente local) {
-        List<Evento> eventosCompatíveis = new ArrayList<>();
+        // Processa Efeitos Contínuos de Doenças
+        contadorDoenca++;
+        if (contadorDoenca >= INTERVALO_VERIFICACAO_DOENCA) {
+            contadorDoenca = 0;
 
-        for (Evento evento : eventosPossiveis) {
-            if (eventoCompativel(evento, local)) {
-                eventosCompatíveis.add(evento);
+            EventoDoencaFerimento eventoSaude = (EventoDoencaFerimento) catalogoDeEventos.getEventoPorNome("Desidratação"); // Você precisará deste método em CatalogoDeEventos
+
+            if (eventoSaude != null) {
+                resultadoEvento = eventoSaude.aplicarEfeitoContinuoDesidratacao(personagem);
+                if (resultadoEvento != null) return resultadoEvento;
+                resultadoEvento = eventoSaude.aplicarEfeitoContinuoInfeccao(personagem);
+                if (resultadoEvento != null) return resultadoEvento;
             }
         }
 
-        if (eventosCompatíveis.isEmpty()) {
+        return null;
+    }
+
+    private <T extends Evento> String sortearEExecutarEvento(Personagem personagem, Ambiente ambiente, Class<T> tipoDeEvento) {
+        List<Evento> eventosCompativeis = catalogoDeEventos.getTodosEventos().stream()
+                .filter(tipoDeEvento::isInstance)
+                .filter(evento -> eventoCompativel(evento, ambiente))
+                .collect(Collectors.toList());
+
+        if (eventosCompativeis.isEmpty()) {
             return null;
         }
 
-        int chance = random.nextInt(100);
-        if (chance >= probabilidadeOcorrencia) {
-            return null;  // Não ocorre evento neste turno
+        Evento eventoEscolhido = eventosCompativeis.get(random.nextInt(eventosCompativeis.size()));
+
+        if (random.nextInt(100) < eventoEscolhido.getProbabilidadeOcorrencia()) {
+            return eventoEscolhido.executar(personagem, ambiente);
         }
 
-        Evento sorteado = eventosCompatíveis.get(random.nextInt(eventosCompatíveis.size()));
+        return null;
+    }
 
-        if (historicoEventos.contains(sorteado)) {
-            return null;  // Evita repetição excessiva
+    private boolean eventoCompativel(Evento evento, Ambiente ambiente) {
+        if (evento.getCondicaoAtivacao().isEmpty() || evento.getCondicaoAtivacao().get(0).isEmpty()) {
+            return true;
         }
 
-        historicoEventos.add(sorteado);
-        return sorteado;
-    }
-
-    public void aplicarEvento(Evento evento, Personagem jogador, Ambiente local) {
-        if (evento != null) {
-            evento.executar(jogador, local);
-        }
-    }
-
-    public void removerEvento(Evento evento) {
-        historicoEventos.remove(evento);
-    }
-
-    private boolean eventoCompativel(Evento evento, Ambiente local) {
-        String nomeAmbiente = local.getClass().getSimpleName().toLowerCase();
+        String nomeAmbiente = ambiente.getNomeAmbiente();
         for (String condicao : evento.getCondicaoAtivacao()) {
-            if (nomeAmbiente.contains(condicao.toLowerCase())) {
+            if (nomeAmbiente.equalsIgnoreCase(condicao)) {
                 return true;
             }
         }

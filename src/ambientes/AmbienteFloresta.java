@@ -13,7 +13,8 @@ public class AmbienteFloresta extends Ambiente {
                 3,
                 new String[]{"Frutas", "Raízes", "Cogumelos", "Madeira", "Pequenos animais para caça"},
                 0.6,
-                "Úmido"
+                "Úmido",
+                "/maps/floresta.txt" // Caminho para o layout do mapa
         );
 
         this.vegetacaoDensa = true;
@@ -33,11 +34,13 @@ public class AmbienteFloresta extends Ambiente {
         return climaUmido;
     }
 
-    public void gerarEvento(){
-
+    @Override
+    public void gerarEvento() {
+        // Lógica futura para eventos específicos da floresta
     }
 
-    public void modificarClima(){
-
+    @Override
+    public void modificarClima() {
+        // Lógica futura para modificação de clima na floresta
     }
 }

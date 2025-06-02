@@ -16,7 +16,7 @@ public class Mechanic extends Jogador {
 
     public Mechanic(PainelJogo gp, EventosTeclado eventosTeclado) {
         super(gp, eventosTeclado);
-        this.mecanico = new Mecanico("Mecanico", 100, 100, 100, 100, 100, null, "Floresta", 36.5, 100, 1, false, false, null);
+        this.mecanico = new Mecanico("Mecanico", 100, 100, 100, 100, 100, null, "Floresta", 36.5, 100, 1, false, false, false, null);
         getImagemJogador();
         //mecanico.exibirStatus();
     }

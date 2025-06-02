@@ -17,12 +17,13 @@ public class Personagem {
     private double temperaturaCorporal = 36.5;
     private int sedeMaxima;
     private int velocidade;
-    private boolean desidratado = false;
-    private boolean infectado = false;
+    private boolean desidratado;
+    private boolean infectado;
+    private boolean delirio;
     private Arma armaEquipada;
 
 
-    public Personagem(String nome, int vida, int fome, int sede, int energia, int sanidade, Inventario inventario, String localizacao, double temperaturaCorporal, int sedeMaxima, int velocidade, boolean desidratado, boolean infectado, Arma armaEquipada) {
+    public Personagem(String nome, int vida, int fome, int sede, int energia, int sanidade, Inventario inventario, String localizacao, double temperaturaCorporal, int sedeMaxima, int velocidade, boolean desidratado, boolean infectado, boolean delirio, Arma armaEquipada) {
         this.nome = nome;
         this.vida = vida;
         this.fome = fome;
@@ -38,7 +39,9 @@ public class Personagem {
         this.velocidade = velocidade;
         this.infectado = infectado;
         this.desidratado = desidratado;
-        this.armaEquipada = armaEquipada;    }
+        this.delirio = delirio;
+        this.armaEquipada = armaEquipada;
+    }
 
     // Getters
     public String getNome() {
@@ -174,6 +177,7 @@ public class Personagem {
         if (temperaturaCorporal < 35.0) {
             reduzirVida(15);  // Perde vida por baixa da temperatura
         }
+
     }
 
 
@@ -236,11 +240,19 @@ public class Personagem {
 
     public boolean isDesidratado() { return desidratado; }
 
+    public boolean isDelirando() {
+        return delirio;
+    }
+
     public boolean isInfectado() { return infectado; }
 
     public void setDesidratado(boolean desidratado) { this.desidratado = desidratado; }
 
     public void setInfectado(boolean infectado) { this.infectado = infectado; }
+
+    public void setDelirando(boolean delirio) {
+        this.delirio = delirio;
+    }
 
     public void atacar(Criatura inimigo) {
         if (armaEquipada != null) {

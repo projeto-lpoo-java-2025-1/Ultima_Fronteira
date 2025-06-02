@@ -6,37 +6,41 @@ public class AmbienteLagoRio extends Ambiente {
     public boolean possibilidadePesca;
     public boolean terrenoLamacento;
 
-    public AmbienteLagoRio(){
-
+    public AmbienteLagoRio() {
         super(
                 "Lago e Rio",
-                "Regiões ricas em água, mas que podem esconder riscos como afogamento ou gui.criaturas aquáticas.",
+                "Regiões ricas em água, mas que podem esconder riscos como afogamento ou criaturas aquáticas.",
                 3,
-                new String[]{"Peixes", "Algas comestíveis","Água doce", "Vegetação ribeirinha"},
+                new String[]{"Peixes", "Algas comestíveis", "Água doce", "Vegetação ribeirinha"},
                 1,
-                "Úmido"
+                "Úmido",
+                "/maps/lagoErio.txt" // Caminho para o layout do mapa
         );
 
-        this.aguaAbundante=aguaAbundante;
-        this.possibilidadePesca=true;
-        this.possibilidadePesca=true;
+        this.aguaAbundante = "Abundante"; // Valor definido
+        this.possibilidadePesca = true;
+        this.terrenoLamacento = true; // Valor definido
     }
 
-    public String getAguaAbundante(){
+    public String getAguaAbundante() {
         return aguaAbundante;
     }
-    public boolean isPossibilidadePesca(){
+
+    public boolean isPossibilidadePesca() {
         return possibilidadePesca;
     }
+
     public boolean isTerrenoLamacento() {
         return terrenoLamacento;
     }
 
-    public void gerarEvento(){
-
+    @Override
+    public void gerarEvento() {
+        // Lógica futura para eventos específicos do lago/rio
     }
 
-    public void modificarClima(){
-
+    @Override
+    public void modificarClima() {
+        // Lógica futura para modificação de clima no lago/rio
     }
 }
