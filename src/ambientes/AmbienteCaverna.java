@@ -1,11 +1,14 @@
+//Pacote
 package ambientes;
 
+//AmbienteCaverna é uma subclasse de Ambiente
 public class AmbienteCaverna extends Ambiente {
 
     private boolean poucaLuz;
     private String criaturasDesconhecidas;
     private boolean aguaGotejamento;
 
+    //Construtor
     public AmbienteCaverna() {
         super("Caverna",
                 "Um ambiente subterrâneo que pode oferecer abrigo contra o clima, mas esconde perigos desconhecidos.",
@@ -33,13 +36,4 @@ public class AmbienteCaverna extends Ambiente {
         return aguaGotejamento;
     }
 
-    @Override
-    public void gerarEvento() {
-        // Lógica futura para eventos específicos da caverna
-    }
-
-    @Override
-    public void modificarClima() {
-        // Lógica futura para modificação de clima na caverna
-    }
 }

@@ -1,11 +1,13 @@
+//Pacote
 package eventos;
 
+//Imports
 import java.util.ArrayList;
 import java.util.List;
-
 import itens.CatalogoDeItens;
 import personagens.CatalogoDeCriaturas;
 
+//Classe CatalogoDeEventos (Necessário para aplicar na GUI)
 public class CatalogoDeEventos {
 
     private List<EventoClimatico> eventosClimaticos;
@@ -13,6 +15,7 @@ public class CatalogoDeEventos {
     private List<EventoDoencaFerimento> eventosDoencaFerimento;
     private List<EventoCriatura> eventosCriatura;
 
+    //Construtor
     public CatalogoDeEventos(CatalogoDeItens catalogoItens) {
         eventosClimaticos = new ArrayList<>();
         eventosDescoberta = new ArrayList<>();
@@ -22,6 +25,7 @@ public class CatalogoDeEventos {
         inicializarEventos();
     }
 
+    //Método para inicializar(instanciar) todos os eventos do jogo
     private void inicializarEventos() {
         CatalogoDeCriaturas catalogo = new CatalogoDeCriaturas();
 
@@ -31,7 +35,7 @@ public class CatalogoDeEventos {
                 "Uma forte chuva começa.",
                 30,
                 new String[]{"- 1 de energia e temperatura corporal"},
-                new String[]{"tempo nublado"},
+                new String[]{"Floresta, Lago e Rio, Montanha, Ruinas"},
                 "Chuva intensa",
                 100,
                 new String[]{
@@ -45,7 +49,7 @@ public class CatalogoDeEventos {
                 "Uma nevasca começa.",
                 15,
                 new String[]{"- 1 de energia e - 2 de temperatura corporal"},
-                new String[]{"tempo frio"},
+                new String[]{"Montanhas"},
                 "Nevasca intensa",
                 100,
                 new String[]{
@@ -59,7 +63,7 @@ public class CatalogoDeEventos {
                 "Uma onda de calor começa.",
                 25,
                 new String[]{"- 2 de sede e +1 de temperatura corporal"},
-                new String[]{"tempo quente"},
+                new String[]{"Caverna, Floresta, Ruinas"},
                 "Calor intenso",
                 100,
                 new String[]{
@@ -72,23 +76,56 @@ public class CatalogoDeEventos {
         eventosDescoberta.add(new EventoDescoberta(
                 "Floresta",
                 "Você encontrou uma floresta.",
-                30,
-                new String[]{"+20 energia"},
-                new String[]{"explorar_caverna"},
-                new String[]{"floresta"},
-                new String[]{"corda", "lanterna"},
-                new String[]{"precisa de lanterna"}
+                100,
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""}
         ));
 
         eventosDescoberta.add(new EventoDescoberta(
-                "Ruínas Antigas",
+                "Ruínas",
                 "Você encontrou ruínas antigas.",
-                20,
-                new String[]{"+10 energia, +5 sanidade"},
-                new String[]{"explorar_ruinas"},
-                new String[]{"ruinas"},
-                new String[]{"artefato", "mapa"},
-                new String[]{"precisa de ferramentas"}
+                100,
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""}
+        ));
+
+        eventosDescoberta.add(new EventoDescoberta(
+                "Montanha",
+                "Você encontrou uma floresta.",
+                100,
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""}
+        ));
+
+        eventosDescoberta.add(new EventoDescoberta(
+                "Lago e Rio",
+                "Você encontrou uma floresta.",
+                100,
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""}
+        ));
+
+        eventosDescoberta.add(new EventoDescoberta(
+                "Caverna",
+                "Você encontrou uma floresta.",
+                100,
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""},
+                new String[]{""}
         ));
 
         // Eventos Doença/Ferimento
@@ -179,6 +216,7 @@ public class CatalogoDeEventos {
         ));
     }
 
+    //Getter para cahar o evento por nome
     public Evento getEventoPorNome(String nome) {
         return getTodosEventos().stream()
                 .filter(e -> e.getNomeEvento().equalsIgnoreCase(nome))
@@ -186,26 +224,30 @@ public class CatalogoDeEventos {
                 .orElse(null);
     }
 
+    //Retorna a lista de eventos climaticos(para exibir na GUI)
     public List<EventoClimatico> getEventosClimaticos() {
         return eventosClimaticos;
     }
 
+    //Retorna a lista de eventos descoberta(para exibir na GUI)
     public List<EventoDescoberta> getEventosDescoberta() {
         return eventosDescoberta;
     }
 
+    //Retorna a lista de eventos doenças/ferimentos(para exibir na GUI)
     public List<EventoDoencaFerimento> getEventosDoencaFerimento() {
         return eventosDoencaFerimento;
     }
 
+    //Retorna a lista de eventos criatura(para exibir na GUI)
     public List<EventoCriatura> getEventosCriatura() {
         return eventosCriatura;
     }
 
+    // Adiciona todos os elementos da lista de eventos à lista 'todos'
     public List<Evento> getTodosEventos() {
         List<Evento> todos = new ArrayList<>();
         todos.addAll(eventosClimaticos);
-        todos.addAll(eventosDescoberta);
         todos.addAll(eventosDoencaFerimento);
         todos.addAll(eventosCriatura);
         return todos;

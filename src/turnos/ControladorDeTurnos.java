@@ -1,8 +1,6 @@
 package turnos;
 
 import personagens.Personagem;
-
-import javax.swing.*;
 import java.util.Timer;
 import java.util.TimerTask;
 

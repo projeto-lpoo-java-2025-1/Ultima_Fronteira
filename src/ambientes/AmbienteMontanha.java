@@ -1,11 +1,14 @@
+//Pacote
 package ambientes;
 
+//AmbienteMontanha é uma subclasse de Ambiente
 public class AmbienteMontanha extends Ambiente {
 
     private boolean terrenoAcidentado;
     private String climaInstavel;
     private String baixaVegetacao;
 
+    //Construtor
     public AmbienteMontanha() {
         super("Montanha",
                 "Uma região de difícil acesso, mas rica em minérios e pedras preciosas.",
@@ -33,13 +36,4 @@ public class AmbienteMontanha extends Ambiente {
         return baixaVegetacao;
     }
 
-    @Override
-    public void gerarEvento() {
-        // Lógica futura para eventos específicos da montanha
-    }
-
-    @Override
-    public void modificarClima() {
-        // Lógica futura para modificação de clima na montanha
-    }
 }

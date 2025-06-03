@@ -1,9 +1,12 @@
+//Pacote
 package personagens;
 
+//Import
 import itens.Item;
 
 import java.util.ArrayList;
 
+//Classe Inventario
 public class Inventario {
     private ArrayList<Item> itens;
     private double pesoMaximo;
@@ -16,17 +19,17 @@ public class Inventario {
         this.pesoTotal = 0.0;
     }
 
-    // Adiciona item (retorna true se conseguiu, false se não)
+    // Adiciona item por uma condicional(retorna true se conseguiu, false se não)
     public boolean adicionarItem(Item item) {
         if (pesoTotal + item.getPeso() > pesoMaximo) {
             return false; // Não adicionou por ultrapassar peso máximo
         }
         itens.add(item);
         pesoTotal += item.getPeso();
-        return true;
+        return true;// Tudo certo pode seguir o procedimento de adicionar o item
     }
 
-    // Remove item pelo nome (retorna true se removeu, false se não encontrou)
+    // Remove item por um loop(for each) + condicional pelo nome (retorna true se removeu, false se não encontrou)
     public boolean removerItem(String nomeItem) {
         for (Item item : itens) {
             if (item.getNome().equalsIgnoreCase(nomeItem)) {
@@ -56,7 +59,7 @@ public class Inventario {
         return new ArrayList<>(itens); // Cópia da lista
     }
 
-    // Peso atual
+    //Getter do PesoTotal
     public double getPesoTotal() {
         return pesoTotal;
     }
@@ -66,7 +69,7 @@ public class Inventario {
         return pesoMaximo - pesoTotal;
     }
 
-    // Peso máximo
+    //Getter do Peso máximo
     public double getPesoMaximo() {
         return pesoMaximo;
     }

@@ -1,20 +1,25 @@
+//Pacote
 package itens;
 
+//Imports
 import exceptions.CombinarException;
 import personagens.Personagem;
 
 import java.util.List;
 
+//Material é uma subclasse de Item
 public class Material extends Item {
     private String tipo;
     private int resistencia;
 
+    //Construtor
     public Material(String nome, int peso, int durabilidade, String tipo, int resistencia) {
         super(nome, peso, durabilidade);
         this.tipo = tipo;
         this.resistencia = resistencia;
     }
 
+    //Getters
     public String getTipo() {
         return tipo;
     }
@@ -23,6 +28,7 @@ public class Material extends Item {
         return resistencia;
     }
 
+    //Setters
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
@@ -43,6 +49,7 @@ public class Material extends Item {
         }
     }
 
+    //Método override de Item
     @Override
     public void usar(Personagem personagem) {
         // Como o Material não é "usável" diretamente, lançamos exceção

@@ -1,5 +1,7 @@
+//Pacote
 package sistema;
 
+//Import
 import gui.system.PainelJogo;
 
 import javax.swing.*;

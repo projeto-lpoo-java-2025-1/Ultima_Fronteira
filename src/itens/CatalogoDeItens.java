@@ -1,9 +1,12 @@
+//Pacote
 package itens;
 
+//Imports
 import java.util.ArrayList;
 import java.util.List;
 import enums.PurezaAgua;
 
+//Classe CatalogoDeItens (Necessário para aplicar na GUI)
 public class CatalogoDeItens {
 
     private List<Alimento> alimentos;
@@ -13,6 +16,7 @@ public class CatalogoDeItens {
     private List<Material> materiais;
     private List<Remedio> remedios;
 
+    //Construtor
     public CatalogoDeItens() {
         this.alimentos = new ArrayList<>();
         this.aguas = new ArrayList<>();
@@ -24,6 +28,7 @@ public class CatalogoDeItens {
         inicializarItens();
     }
 
+    //Método para inicializar(instanciar) todos os itens do jogo
     private void inicializarItens() {
         // Alimentos
         alimentos.add(new Alimento("Enlatado", 3, 100, "Enlatado", 25, 35)); //
@@ -52,6 +57,7 @@ public class CatalogoDeItens {
         remedios.add(new Remedio("Bandagem", 1, 40, "Febre", "Reduz a febre", 10)); //
     }
 
+    //Retorna a lista de itens(para exibir na GUI)
     public List<Item> obterTodosOsItens() {
         List<Item> todos = new ArrayList<>();
         todos.addAll(alimentos); //
@@ -71,6 +77,7 @@ public class CatalogoDeItens {
     public List<Material> getMateriais() { return materiais; } //
     public List<Remedio> getRemedios() { return remedios; } //
 
+    //Getter especifico para alimento
     public Alimento getAlimentoPorNome(String nome) {
         for (Alimento alimento : alimentos) { //
             if (alimento.getNome().equalsIgnoreCase(nome)) { //
@@ -80,6 +87,7 @@ public class CatalogoDeItens {
         return null;
     }
 
+    //Getter para buscar o item pelo nome
     public Item getItemPorNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) {
             return null;

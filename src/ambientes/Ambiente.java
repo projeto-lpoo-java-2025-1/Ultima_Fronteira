@@ -1,9 +1,12 @@
+//Pacote
 package ambientes;
 
+//Imports
 import eventos.Evento;
 import java.util.Arrays;
 import java.util.List;
 
+//Classe abstrata Ambiente
 public abstract class Ambiente {
 
     private String nomeAmbiente;
@@ -15,6 +18,7 @@ public abstract class Ambiente {
     private String caminhoMapa; // Atributo adicionado
     private List<Evento> eventosPossiveis;
 
+    //Construtor
     public Ambiente(String nomeAmbiente, String descricaoAmbiente, int dificuldadeExploracao, String[] recursos, double probabilidadeEventos, String condicoesClimaticas, String caminhoMapa) {
         this.nomeAmbiente = nomeAmbiente;
         this.descricaoAmbiente = descricaoAmbiente;
@@ -25,6 +29,7 @@ public abstract class Ambiente {
         this.caminhoMapa = caminhoMapa; // Construtor atualizado
     }
 
+    //Getters
     public String getNomeAmbiente() {
         return nomeAmbiente;
     }
@@ -54,14 +59,8 @@ public abstract class Ambiente {
         return caminhoMapa;
     }
 
+    //Setters
     public void setNomeAmbiente(String nomeAmbiente) {
         this.nomeAmbiente = nomeAmbiente;
     }
-
-    public void explorar() {
-    }
-
-    public abstract void gerarEvento();
-
-    public abstract void modificarClima();
 }

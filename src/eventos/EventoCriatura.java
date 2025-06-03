@@ -1,20 +1,20 @@
+//Pacote
 package eventos;
 
+//Imports
 import ambientes.Ambiente;
 import personagens.Criatura; // Refere-se à sua classe Criatura do back-end
 import personagens.Personagem; // Refere-se à sua classe Personagem do back-end
 import itens.CatalogoDeItens; // Para o método combater
 import itens.Alimento; // Para o método combater
-
 import java.util.List;
 import java.util.Random;
 
+//EventoCriatura é uma subclasse de Evento
 public class EventoCriatura extends Evento {
 
-    private List<Criatura> criaturas; // Lista de tipos de Criatura do back-end
-    private Criatura criaturaAtual;   // A instância específica da criatura encontrada neste evento
-    // Removi 'mensagemEvento' como campo, pois 'executar' agora retorna a mensagem diretamente.
-
+    private List<Criatura> criaturas; //Lista de criaturas
+    private Criatura criaturaAtual;
     public EventoCriatura(String nomeEvento, String descricaoEvento, int probabilidadeOcorrencia,
                           String[] impacto, String[] condicaoAtivacao,
                           List<Criatura> criaturas) {
@@ -22,14 +22,17 @@ public class EventoCriatura extends Evento {
         this.criaturas = criaturas;
     }
 
+    //Retorna a lista de Criaturas
     public List<Criatura> getCriaturas() {
         return criaturas;
     }
 
+    //Getter
     public Criatura getCriaturaAtual() {
         return criaturaAtual;
     }
 
+    //Métoo override de Evento
     @Override
     public String executar(Personagem personagem, Ambiente local) {
         Random random = new Random();
@@ -59,6 +62,7 @@ public class EventoCriatura extends Evento {
         return mensagem.toString();
     }
 
+    //Método combater a criatura
     public String combater(Personagem personagem, CatalogoDeItens catalogo) {
         if (criaturaAtual == null) return "Nenhuma criatura para combater.";
 
@@ -93,6 +97,7 @@ public class EventoCriatura extends Evento {
         return resultadoCombate;
     }
 
+    //Método fugir de uma criatura
     public String fugir(Personagem personagem) {
         if (criaturaAtual == null) return "Nenhuma criatura para fugir.";
 

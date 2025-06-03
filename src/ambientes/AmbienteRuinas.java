@@ -1,11 +1,14 @@
+//Pacote
 package ambientes;
 
+//AmbienteRuinas é uma subclasse de Ambiente
 public class AmbienteRuinas extends Ambiente {
 
     private boolean estruturaInstavel;
     private boolean outrosSobreviventes;
     private boolean baixoRiscoClimatico;
 
+    //Construtor
     public AmbienteRuinas() {
         super("Ruinas",
                 "Restos de antigas construções que podem conter suprimentos valiosos ou armadilhas.",
@@ -33,13 +36,4 @@ public class AmbienteRuinas extends Ambiente {
         return baixoRiscoClimatico;
     }
 
-    @Override
-    public void gerarEvento() {
-        // Lógica futura para eventos específicos das ruínas
-    }
-
-    @Override
-    public void modificarClima() {
-        // Lógica futura para modificação de clima nas ruínas
-    }
 }

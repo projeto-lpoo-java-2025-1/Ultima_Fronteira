@@ -1,5 +1,7 @@
+//Pacote
 package eventos;
 
+//Imports
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -7,6 +9,7 @@ import ambientes.Ambiente;
 import personagens.Personagem;
 import itens.CatalogoDeItens;
 
+//Classe de gerenciamento de eventos
 public class GerenciadorDeEventos {
 
     private CatalogoDeEventos catalogoDeEventos;
@@ -18,6 +21,7 @@ public class GerenciadorDeEventos {
     private final int INTERVALO_VERIFICACAO_CLIMA = 1200;
     private final int INTERVALO_VERIFICACAO_DOENCA = 600;
 
+    //Construtor
     public GerenciadorDeEventos(CatalogoDeItens catalogoItens) {
         this.catalogoDeEventos = new CatalogoDeEventos(catalogoItens);
         this.random = new Random();

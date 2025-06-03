@@ -1,5 +1,7 @@
-package personagens; // Define que esta classe pertence ao pacote 'itens'
+//Pacote
+package personagens;
 
+//Import
 import itens.Arma;
 
 // A classe SobreviventeNato é uma subclasse da classe Personagem
@@ -13,6 +15,7 @@ public class SobreviventeNato extends Personagem {
 
     }
 
+    //Método boolean para aplicação da skill do SobreviventeNato (recupera vida a cada turno(diretamente relacionado com o metodo do sistema de turnos de aplicação de efeitos))
     public boolean recuperarSedeTurno() {
         try {
             this.recuperarSede(1);
@@ -22,6 +25,7 @@ public class SobreviventeNato extends Personagem {
         }
     }
 
+    //Método boolean para aplicação da skill do SobreviventeNato (recupera vida a cada turno(diretamente relacionado com o metodo do sistema de turnos de aplicação de efeitos))
     public boolean recuperarFomeTurno() {
         try {
             this.recuperarFome(1);

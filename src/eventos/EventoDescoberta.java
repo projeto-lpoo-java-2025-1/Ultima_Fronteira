@@ -1,21 +1,23 @@
+//Pacote
 package eventos;
 
+//Imports
 import ambientes.Ambiente;
-import itens.CatalogoDeItens; // Assume que esta é sua classe do back-end
-import itens.Item;           // Assume que esta é sua classe Item do back-end
-import personagens.Personagem; // Assume que esta é sua classe Personagem do back-end
+import itens.CatalogoDeItens;
+import itens.Item;
+import personagens.Personagem;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+//EventoDescoberta é uma subclasse de Evento
 public class EventoDescoberta extends Evento {
 
-    private List<String> tipoDescoberta; // Ex: "Baú", "Local Secreto", "Corpo"
-    private List<String> recursosEncontrados; // Nomes dos itens a serem encontrados
-    private List<String> condicaoEspecial; // Ex: "Precisa de chave", "Cuidado com armadilhas"
+    private List<String> tipoDescoberta;
+    private List<String> recursosEncontrados;
+    private List<String> condicaoEspecial; //
 
-    // O campo 'mensagemEvento' foi removido.
-
+    //Construtor
     public EventoDescoberta(String nomeEvento, String descricaoEvento, int probabilidadeOcorrencia, String[] impacto,
                             String[] condicaoAtivacao, String[] tipoDescoberta, String[] recursosEncontrados, String[] condicaoEspecial) {
         super(nomeEvento, descricaoEvento, probabilidadeOcorrencia, impacto, condicaoAtivacao);
@@ -24,22 +26,24 @@ public class EventoDescoberta extends Evento {
         this.condicaoEspecial = Arrays.asList(condicaoEspecial);
     }
 
+    //Retorna a lista dos tipos de descoberta
     public List<String> getTipoDescoberta() {
         return tipoDescoberta;
     }
 
+    //Retorna a lista dos recursos encontrados
     public List<String> getRecursosEncontrados() {
         return recursosEncontrados;
     }
 
+    //Retorna a lista das condições especiais
     public List<String> getCondicaoEspecial() {
         return condicaoEspecial;
     }
 
-    // O getter getMensagemEvento() foi removido.
-
+    //Método override de Evento
     @Override
-    public String executar(Personagem personagem, Ambiente local) { // Agora retorna String
+    public String executar(Personagem personagem, Ambiente local) {
         StringBuilder mensagem = new StringBuilder();
         Random random = new Random();
 
@@ -60,10 +64,11 @@ public class EventoDescoberta extends Evento {
             mensagem.append("Não parece haver nada de valor imediato aqui, mas o conhecimento é uma recompensa.");
         }
 
-        return mensagem.toString(); // Retorna a mensagem construída
+        return mensagem.toString();
     }
 
-    public String coletarRecursos(Personagem personagem, CatalogoDeItens catalogo) { // Agora retorna String
+    //Método de coletar um recurso encontrado
+    public String coletarRecursos(Personagem personagem, CatalogoDeItens catalogo) {
         if (recursosEncontrados == null || recursosEncontrados.isEmpty() || recursosEncontrados.get(0).isEmpty()) {
             return "Não há recursos específicos para coletar nesta descoberta.";
         }
@@ -85,6 +90,6 @@ public class EventoDescoberta extends Evento {
                 resultadoColeta.append("Recurso '").append(nomeRecurso).append("' não encontrado no catálogo para coleta.\n");
             }
         }
-        return resultadoColeta.toString().trim(); // Retorna a mensagem construída
+        return resultadoColeta.toString().trim();
     }
 }

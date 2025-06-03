@@ -1,11 +1,14 @@
+//Pacote
 package ambientes;
 
+//AmbienteLagoRio é uma subclasse de Ambiente
 public class AmbienteLagoRio extends Ambiente {
 
     public String aguaAbundante;
     public boolean possibilidadePesca;
     public boolean terrenoLamacento;
 
+    //Construtor
     public AmbienteLagoRio() {
         super(
                 "Lago e Rio",
@@ -34,13 +37,4 @@ public class AmbienteLagoRio extends Ambiente {
         return terrenoLamacento;
     }
 
-    @Override
-    public void gerarEvento() {
-        // Lógica futura para eventos específicos do lago/rio
-    }
-
-    @Override
-    public void modificarClima() {
-        // Lógica futura para modificação de clima no lago/rio
-    }
 }

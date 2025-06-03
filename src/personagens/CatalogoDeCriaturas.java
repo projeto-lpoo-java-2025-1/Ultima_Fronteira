@@ -1,18 +1,23 @@
+//Pacote
 package personagens;
 
+//Import
 import enums.TipoAcaoCriatura;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//Classe CatalogoDeCriaturas (Necessário para aplicar na GUI)
 public class CatalogoDeCriaturas {
     private List<Criatura> criaturas;
 
+    //Construtor
     public CatalogoDeCriaturas() {
         this.criaturas = new ArrayList<>();
         inicializarCriaturas();
     }
 
+    //Método para inicializar(instanciar) todas as criaturas do jogo
     private void inicializarCriaturas() {
         criaturas.add(new Criatura("Lobo", 2, 30, TipoAcaoCriatura.MORDIDA));
         criaturas.add(new Criatura("Urso", 4, 50, TipoAcaoCriatura.GARRAS ));
@@ -24,10 +29,12 @@ public class CatalogoDeCriaturas {
         criaturas.add(new Criatura("Coelho", 0, 10, TipoAcaoCriatura.PULA ));
     }
 
+    //Retorna a lista de criaturas(para exibir na GUI)
     public List<Criatura> getCriaturas() {
         return criaturas;
     }
 
+    //Getter especifico para pegar cada criatura pelo seu nome
     public Criatura getCriaturaPorNome(String nome) {
         for (Criatura c : criaturas) {
             if (c.getNome().equalsIgnoreCase(nome)) {

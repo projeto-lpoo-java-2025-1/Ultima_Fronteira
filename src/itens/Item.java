@@ -1,8 +1,10 @@
-package itens; // Define que esta classe pertence ao pacote 'itens'
+//Pacote
+package itens;
 
+//Import
 import personagens.Personagem;
 
-// Declaração da classe pública 'Item'
+//Classe Abstrata Item
 public abstract class Item {
     private String nome;
     private int peso;
@@ -41,5 +43,6 @@ public abstract class Item {
         this.durabilidade = durabilidade;
     }
 
+    //Método abstrato usar para forçar as subclasses a usarem e facilitar no uso do inventario
     public abstract void usar(Personagem personagem);
 }

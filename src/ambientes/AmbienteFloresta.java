@@ -1,11 +1,14 @@
+//Pacote
 package ambientes;
 
+//AmbienteFloresta é uma subclasse de Ambiente
 public class AmbienteFloresta extends Ambiente {
 
     private boolean vegetacaoDensa;
     private boolean faunaAbundante;
     private boolean climaUmido;
 
+    //Construtor
     public AmbienteFloresta() {
         super(
                 "Floresta",
@@ -34,13 +37,4 @@ public class AmbienteFloresta extends Ambiente {
         return climaUmido;
     }
 
-    @Override
-    public void gerarEvento() {
-        // Lógica futura para eventos específicos da floresta
-    }
-
-    @Override
-    public void modificarClima() {
-        // Lógica futura para modificação de clima na floresta
-    }
 }

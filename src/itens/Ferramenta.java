@@ -1,5 +1,7 @@
-package itens;// Define que esta classe pertence ao pacote 'itens'
+//Pacote
+package itens;
 
+//Imports
 import exceptions.FerramentaQuebradaException;
 import personagens.Personagem;
 

@@ -1,13 +1,17 @@
+//Pacote
 package eventos;
 
+//Imports
 import ambientes.Ambiente;
 import personagens.Personagem;
 
+//EventoClimatico é uma subclasse de Evento
 public class EventoClimatico extends Evento {
 
     private String tipoClima;
     private int duracao;
 
+    //Construtor
     public EventoClimatico(String nomeEvento, String descricaoEvento, int probabilidadeOcorrencia,
                            String[] impacto, String[] condicaoAtivacao, String tipoClima,
                            int duracao, String[] efeito) {
@@ -16,6 +20,7 @@ public class EventoClimatico extends Evento {
         this.duracao = duracao;
     }
 
+    //Método override de Evento em que aplica os efeitos do eventoClimatico
     @Override
     public String executar(Personagem personagem, Ambiente local) {
         // A lógica de impacto agora está encapsulada e retorna uma mensagem para a GUI

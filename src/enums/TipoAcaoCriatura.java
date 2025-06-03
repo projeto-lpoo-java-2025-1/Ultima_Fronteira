@@ -1,6 +1,7 @@
+//Pacote
 package enums;
 
-// No pacote personagens ou um subpacote enums
+// Define o estado de tipo de ação da criatura
 public enum TipoAcaoCriatura {
     MORDIDA("Ataca com mordida"),
     GARRAS("Ataca com garras"),

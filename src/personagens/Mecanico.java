@@ -1,8 +1,8 @@
-package personagens; // Define que esta classe pertence ao pacote 'itens'
+//Pacote
+package personagens;
 
+//Imports
 import itens.Arma;
-import itens.CatalogoDeItens;
-import itens.Item;
 
 // A classe Mecanico é uma subclasse da classe Personagem
 public class Mecanico extends Personagem {
@@ -14,7 +14,7 @@ public class Mecanico extends Personagem {
         super(nome, vida, fome, sede, energia, sanidade, inventario, localizacao, temperaturaCorporal, sedeMaxima, velocidade, desidratado, infectado, delirio, armaEquipada);
     }
 
-    //Skill em desenvolvimento
+    //Sua é skill é a inicialização do personagem com uma espada
 
 }
 

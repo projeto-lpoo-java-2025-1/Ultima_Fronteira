@@ -5,7 +5,8 @@ package gui.entidades;
 import gui.system.EventosTeclado;
 import gui.system.PainelJogo;
 import personagens.Mecanico;
-import personagens.Personagem;
+import itens.Arma;
+import itens.CatalogoDeItens;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -16,6 +17,8 @@ public class Mechanic extends Jogador {
 
     public Mechanic(PainelJogo gp, EventosTeclado eventosTeclado) {
         super(gp, eventosTeclado);
+        //CatalogoDeItens catalogo = new CatalogoDeItens();
+        //Arma armaInicial = (Arma) catalogo.getItemPorNome("Espada");
         this.mecanico = new Mecanico("Mecanico", 100, 100, 100, 100, 100, null, "Floresta", 36.5, 100, 1, false, false, false, null);
         getImagemJogador();
         //mecanico.exibirStatus();

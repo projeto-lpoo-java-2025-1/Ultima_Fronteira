@@ -1,9 +1,11 @@
+//Pacote
 package personagens;
 
-import eventos.EventoCriatura;
+//Imports
 import exceptions.*;
 import itens.Arma;
 
+//Classe
 public class Personagem {
 
     private String nome;
@@ -22,7 +24,7 @@ public class Personagem {
     private boolean delirio;
     private Arma armaEquipada;
 
-
+    //Construtor
     public Personagem(String nome, int vida, int fome, int sede, int energia, int sanidade, Inventario inventario, String localizacao, double temperaturaCorporal, int sedeMaxima, int velocidade, boolean desidratado, boolean infectado, boolean delirio, Arma armaEquipada) {
         this.nome = nome;
         this.vida = vida;
@@ -137,6 +139,7 @@ public class Personagem {
         this.armaEquipada = arma;
     }
 
+    //Metodos de reduções de atributos + exceções para casos de erros
     public void reduzirEnergia(int quantidade) {
         if (energia < quantidade) {
             throw new EnergiaInsuficienteException();
@@ -181,7 +184,7 @@ public class Personagem {
     }
 
 
-    // Recuperação
+    //Metodos de recuperações de atributos + exceções para casos de erros
     public void recuperarVida(int quantidade) {
         vida += quantidade;
         if (vida > 100) {
@@ -224,6 +227,7 @@ public class Personagem {
         }
     }
 
+    //Método para exibir status na aplicação da GUI
     public String obterStatus() {
         StringBuilder status = new StringBuilder();
         status.append("Personagem: ").append(getNome()).append("\n");
@@ -238,6 +242,7 @@ public class Personagem {
         return status.toString();
     }
 
+    //Métodos boolean para identificação do EventoDoencaFerimento no personagem
     public boolean isDesidratado() { return desidratado; }
 
     public boolean isDelirando() {
@@ -254,6 +259,7 @@ public class Personagem {
         this.delirio = delirio;
     }
 
+    //Método de ataque a criaturas baseado atacar com arma ou sem a arma
     public void atacar(Criatura inimigo) {
         if (armaEquipada != null) {
             armaEquipada.atacar(inimigo);

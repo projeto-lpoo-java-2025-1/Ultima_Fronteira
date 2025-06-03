@@ -1,9 +1,12 @@
+//Pacote
 package eventos;
 
+//Imports
 import ambientes.Ambiente;
-import personagens.Personagem; // Sua classe Personagem do back-end
+import personagens.Personagem;
 import java.util.Random;
 
+//EventoDoencaFerimento é uma subclasse de Evento
 public class EventoDoencaFerimento extends Evento {
 
     public EventoDoencaFerimento(String nomeEvento, String descricaoEvento, int probabilidadeOcorrencia,
@@ -12,6 +15,7 @@ public class EventoDoencaFerimento extends Evento {
         super(nomeEvento, descricaoEvento, probabilidadeOcorrencia, impacto, condicaoAtivacao);
     }
 
+    //Método override de Evento
     @Override
     public String executar(Personagem personagem, Ambiente local) {
         String nomeEsteEvento = this.getNomeEvento();
@@ -36,6 +40,7 @@ public class EventoDoencaFerimento extends Evento {
         return getDescricaoEvento() + " (Uma infecção te antigiu!)";
     }
 
+    //Método de aplicar o efeito de desidratação
     public String aplicarEfeitoContinuoDesidratacao(Personagem personagem) {
         if (personagem.isDesidratado()) {
             personagem.setEnergia(personagem.getEnergia() - 1);
@@ -52,6 +57,7 @@ public class EventoDoencaFerimento extends Evento {
         }
     }
 
+    //Método de aplciar efeito de infecção
     public String aplicarEfeitoContinuoInfeccao(Personagem personagem) {
         if (personagem.isInfectado()) {
             personagem.setVida(personagem.getVida() - 1);
@@ -60,6 +66,7 @@ public class EventoDoencaFerimento extends Evento {
         return null;
     }
 
+    //Método e verificar e aplicar o efeito de delirio
     private String verificarEAtivarOuDesativarDelirio(Personagem personagem) {
         boolean condicaoParaDelirio = (personagem.getSanidade() <= 2 || personagem.isDesidratado());
         boolean estavaDelirando = personagem.isDelirando();
@@ -81,6 +88,7 @@ public class EventoDoencaFerimento extends Evento {
         return null;
     }
 
+    //Método de bber agua contaminada e contrair uma infeccção
     public String beberAguaContaminada(Personagem personagem) {
         if (personagem.getSede() < personagem.getSedeMaxima()) {
             personagem.setSede(personagem.getSede() + 1);

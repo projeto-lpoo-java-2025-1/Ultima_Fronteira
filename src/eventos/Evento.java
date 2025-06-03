@@ -1,10 +1,13 @@
+//Pacote
 package eventos;
 
+//Imports
 import ambientes.Ambiente;
 import personagens.Personagem; // Supondo que você tenha essa classe no back-end
 import java.util.Arrays;
 import java.util.List;
 
+//Classe abstrata Evento
 public abstract class Evento {
 
     private String nomeEvento;
@@ -13,6 +16,7 @@ public abstract class Evento {
     private List<String> impactoEvento;
     private List<String> condicaoAtivacao;
 
+    //Construtor
     public Evento(String nomeEvento, String descricaoEvento, int probabilidadeOcorrencia, String[] impacto, String[] condicao){
         this.nomeEvento = nomeEvento;
         this.descricaoEvento = descricaoEvento;
@@ -21,13 +25,13 @@ public abstract class Evento {
         this.condicaoAtivacao = Arrays.asList(condicao);
     }
 
-    // Getters...
+    // Getters
     public String getNomeEvento() { return nomeEvento; }
     public String getDescricaoEvento() { return descricaoEvento; }
     public int getProbabilidadeOcorrencia() { return probabilidadeOcorrencia; }
     public List<String> getImpactoEvento() { return impactoEvento; }
     public List<String> getCondicaoAtivacao() { return condicaoAtivacao; }
 
-    // MÉTODO ABSTRATO CORRIGIDO para retornar String
+    //Método abstrato
     public abstract String executar(Personagem personagem, Ambiente local);
 }

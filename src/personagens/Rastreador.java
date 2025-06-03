@@ -1,10 +1,13 @@
+//Pacote
 package personagens;
 
+//Import
 import itens.Arma;
 
+// A classe Medico é uma subclasse da classe Personagem
 public class Rastreador extends Personagem {
 
-    // Construtor que chama o construtor da superclasse Personagem
+    // Construtor
     public Rastreador(String nome, int vida, int fome, int sede, int energia, int sanidade,
                       Inventario inventario, String localizacao, double temperaturaCorporal,
                       int sedeMaxima, int velocidade, boolean desidratado, boolean infectado, boolean delirio, Arma armaEquipada) {
@@ -12,6 +15,6 @@ public class Rastreador extends Personagem {
 
     }
 
-    //Mais chances de encontrar agua e comida(Skill em desenvolvimento)
+    //Skill em desenvolvimento
 
 }
