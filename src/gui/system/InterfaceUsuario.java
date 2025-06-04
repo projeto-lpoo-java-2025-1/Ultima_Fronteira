@@ -1,7 +1,9 @@
 package gui.system;
 
 import gui.entidades.Entidade;
-import gui.objetos.OBJ_Vida;
+import gui.itens.ALIMENTO_CarneAssada;
+import gui.itens.Material;
+import gui.itens.OBJ_Vida;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,20 +14,21 @@ import java.util.ArrayList;
 
 public class InterfaceUsuario {
 
-
     private PainelJogo gp;
     private Font Font05, Font03;
     private Graphics2D g2;
 
-    private BufferedImage fundo2, vida_cheia, vida_vazia, vida_metade;
+    private BufferedImage fundo, fundo2, fundodialogo, fundoHistoria, vida_cheia, vida_vazia, vida_metade, craft;
 
     //private boolean jogoFinalizado = true;
 
     private int comandoNum = 0;
     private int telaMenu = 0;
     //private int telaDesc = 0;
-    private int slotCol = 0;
-    private int slotLinha = 0;
+    private int jogadorSlotCol = 0;
+    private int jogadorSlotLinha = 0;
+    private int npcSlotCol=0;
+    private int npcSlotLinha=0;
 
     private String personagemSelecionado;
 
@@ -33,29 +36,69 @@ public class InterfaceUsuario {
     private String[] dialogos;
     private int indiceDialogo = 0;
 
+    private int contador=0;
+
     private String mensagem = "";
     private boolean mensagemOn = false;
     private int contadorMensagem = 0;
 
+    int subEstado = 0;
     //private Personagem personagem;
+
+    private int alphaMensagem = 0;
+    private int contadorFade = 0;
+    private boolean mostrandoMensagem = false;
+    private String textoMapaAtual = "";
+    private int ultimoMapa = -1;
+    private Entidade prata;
+    private Entidade ouro;
+    private Entidade esmeralda;
+
+    private Entidade npc;
 
     // Métodos de acesso
 
-    public int getSlotCol() {
-        return slotCol;
+
+    public Entidade getNpc() {
+        return npc;
     }
 
-    public int getSlotLinha() {
-        return slotLinha;
+    public void setNpc(Entidade npc) {
+        this.npc = npc;
     }
 
-    public void setSlotLinha(int slotLinha) {
-        this.slotLinha = slotLinha;
+    public int getJogadorSlotCol() {
+        return jogadorSlotCol;
     }
 
-    public void setSlotCol(int slotCol) {
-        this.slotCol = slotCol;
+    public int getJogadorSlotLinha() {
+        return jogadorSlotLinha;
     }
+
+    public void setJogadorSlotLinha(int jogadorSlotLinha) {
+        this.jogadorSlotLinha= jogadorSlotLinha;
+    }
+
+    public void setJogadorSlotCol(int jogadorSlotCol) {
+        this.jogadorSlotCol = jogadorSlotCol;
+    }
+
+    public int getNpcSlotCol() {
+        return npcSlotCol;
+    }
+
+    public int getNpcSlotLinha() {
+        return npcSlotLinha;
+    }
+
+    public void setNpcSlotLinha(int npcSlotLinha) {
+        this.npcSlotLinha = npcSlotLinha;
+    }
+
+    public void setNpcSlotCol(int npcSlotCol) {
+        this.npcSlotCol = npcSlotCol;
+    }
+
 
     public int getComandoNum() {
         return comandoNum;
@@ -108,7 +151,9 @@ public class InterfaceUsuario {
 
         try {
             fundo2 = ImageIO.read(getClass().getResourceAsStream("/fundo/fundo02.png"));
-
+            fundo = ImageIO.read(getClass().getResourceAsStream("/fundo/fundo.png"));
+            fundoHistoria = ImageIO.read(getClass().getResourceAsStream("/fundo/fundoHistoria.png"));
+            fundodialogo = ImageIO.read(getClass().getResourceAsStream("/fundo/fundodialogo.png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,8 +164,17 @@ public class InterfaceUsuario {
         vida_vazia = vida.getImagem3();
 
 
-    }
+        //Entidade prata=new Material(gp, "prata");
+        //Entidade ouro=new Material(gp, "ouro");
+        //Entidade esmeralda=new Material(gp, "esmeralda");
 
+        this.prata = new Material(gp, "prata");
+
+        this.ouro=new Material(gp, "ouro");
+
+        this.esmeralda=new Material(gp, "esmeralda");
+
+    }
 
     public void desenhar(Graphics2D g2) {
         this.g2 = g2;
@@ -141,20 +195,34 @@ public class InterfaceUsuario {
 
         } else if (gp.getEstadoJogo() == gp.getEstadoPersonagem()) {
             desenharStatusPersonagem();
-            desenharInventario();
+            desenharInventario(gp.jogador, true);
 
         } else if (gp.getEstadoJogo() == gp.getEstadoJogoFinalizado()) {
             desenharTelaJogoFinalizado();
 
+        } else if (gp.getEstadoJogo() == gp.getEstadoJogoDescricao()) {
+            desenharTelaDescricao();
+        } else if (gp.getEstadoJogo() == gp.getEstadoOpcoes()) {
+            desenharOpcoesMenu();
+        } else if (gp.getEstadoJogo() == gp.getEstadoAssarAlimento()) {
+            desenharTelaAssar();
+        } else if(gp.getEstadoJogo()==gp.getEstadoTransicao()){
+            desenharTransicao();
+        } else if(gp.getEstadoJogo()==gp.getEstadoSistemaDeTroca()){
+            desenharTelaSistemaDeTrocas();
+
+        }else if(gp.getEstadoJogo()==gp.getEstadoJogoVencido()){
+            desenharTelaJogoVencido();
         }
 
-        if (mensagemOn == true) {
+        desenharNomeMapa(g2);
 
+        if (mensagemOn == true) {
             g2.setColor(Color.BLACK);
-            g2.setFont(Font05.deriveFont(25f));
+            g2.setFont(Font05.deriveFont(20f));
             g2.drawString(mensagem, (gp.getTamanhoBloco() / 2) + 3, 300 + 2);
 
-            g2.setFont(Font05.deriveFont(25f));
+            g2.setFont(Font05.deriveFont(20f));
             g2.setColor(Color.white);
             g2.drawString(mensagem, gp.getTamanhoBloco() / 2, 300);
             g2.drawString(mensagem, gp.getTamanhoBloco() / 2, 300);
@@ -165,13 +233,653 @@ public class InterfaceUsuario {
 
                 contadorMensagem = 0;
                 mensagemOn = false;
-
             }
+
+        }
+
+    }
+
+    public void desenharTransicao(){
+
+        contador++;
+        g2.setColor(new Color(0,0,0, contador*5));
+        g2.fillRect(0,0,gp.getTelaLargura(), gp.getTelaAltura());
+
+        if(contador==50){
+            contador=0;
+            gp.setEstadoJogo(gp.getEstadoPlay());
+            gp.setMapaAtual(gp.getManipuladorDeEventos().getMapaTemp());
+            gp.jogador.setMundoX(gp.getTamanhoBloco()*gp.getManipuladorDeEventos().getColunaTemp());
+            gp.jogador.setMundoY(gp.getTamanhoBloco()*gp.getManipuladorDeEventos().getLinhaTemp());
+            gp.getManipuladorDeEventos().setEventoAnteriorX(gp.jogador.getMundoX());
+            gp.getManipuladorDeEventos().setEventoAnteriorY(gp.jogador.getMundoY());
 
 
         }
 
 
+
+    }
+
+    public void desenharTelaSistemaDeTrocas(){
+        switch(subEstado){
+            case 0: sistemaDeTrocas_selecionar(); break;
+            case 1: sistemaDeTrocas_comprar(); break;
+            case 2: sistemaDeTrocas_vender(); break;
+        }
+
+        gp.getEventosTeclado().setEnterPressionado(false);
+
+
+    }
+
+    public void sistemaDeTrocas_selecionar(){
+
+        desenharTelaDialogo();
+
+        int x=gp.getTamanhoBloco()*15;
+        int y=gp.getTamanhoBloco()*4;
+        int largura=(int)(gp.getTamanhoBloco()*3.5);
+        int altura=(int)(gp.getTamanhoBloco()*3.5);
+        desenharJanela(x,y,altura,largura);
+
+        x+=gp.getTamanhoBloco();
+        y+=gp.getTamanhoBloco();
+        g2.drawString("Comprar", x, y);
+        if(comandoNum==0){
+            g2.drawString(">", x-24, y);
+            if(gp.getEventosTeclado().isEnterPressionado()){
+                subEstado=1;
+            }
+        }
+        y+=gp.getTamanhoBloco();
+        g2.drawString("Vender", x, y);
+        if(comandoNum==1){
+            g2.drawString(">", x-24, y);
+            if(gp.getEventosTeclado().isEnterPressionado()){
+                subEstado=2;
+            }
+        }
+        y+=gp.getTamanhoBloco();
+        g2.drawString("Sair",x,y);
+        if(comandoNum==2){
+            g2.drawString(">", x-24, y);
+            if(gp.getEventosTeclado().isEnterPressionado()){
+                comandoNum=0;
+                gp.setEstadoJogo(gp.getEstadoDialogo());
+                dialogoAtual="Você de novo?";
+            }
+
+        }
+
+    }
+
+    public void sistemaDeTrocas_comprar() {
+
+        desenharInventario(gp.jogador, false);
+        desenharInventario(npc, true);
+
+        int itemIndiceNPC = pegarItemSlot(npcSlotCol, npcSlotLinha);  // Item do NPC
+
+        int x = gp.getTamanhoBloco() * 12;
+        int y = gp.getTamanhoBloco() * 9;
+        g2.drawString("[ENTER] Comprar (com ouro)  |  [ESC] Voltar", x, y + 40);
+
+        if (gp.getEventosTeclado().isEnterPressionado()) {
+            if (itemIndiceNPC < npc.getInventario().size()) {
+                Entidade itemDesejado = npc.getInventario().get(itemIndiceNPC);
+
+                // Verifica se o jogador tem o item de troca necessário (ex: "ouro")
+                Entidade itemDeTroca = null;
+                for (Entidade item : gp.jogador.getInventario()) {
+                    if (item instanceof Material && item.getNome().equalsIgnoreCase("ouro")) {
+                        itemDeTroca = item;
+                        break;
+                    }
+                }
+
+                if (itemDeTroca != null) {
+                    // Realiza a troca
+                    gp.jogador.getInventario().remove(itemDeTroca);
+                    gp.jogador.getInventario().add(itemDesejado);
+                    npc.getInventario().remove(itemDesejado);
+
+                    mensagem = "Você comprou " + itemDesejado.getNome() + " com ouro!";
+                } else {
+                    mensagem = "Você precisa de ouro para comprar esse item.";
+                }
+
+                mensagemOn = true;
+                contadorMensagem = 0;
+            }
+
+            gp.getEventosTeclado().setEnterPressionado(false);
+        }
+    }
+
+
+
+    public void desenharTelaJogoVencido(){
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, gp.getTelaLargura(), gp.getTelaAltura());
+
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+
+            g2.setFont(Font05.deriveFont(65f));
+
+            // Texto "VOCÊ VENCEU!" com sombra
+            String texto = "VOCÊ VENCEU!";
+            int x = obterXCentralizarTexto(texto);
+            int y = 200;
+
+            g2.setColor(Color.BLACK);
+            g2.drawString(texto, x + 4, y + 4);
+            g2.setColor(new Color(0, 255, 127)); // Verde vibrante
+            g2.drawString(texto, x, y);
+
+            // Texto "Jogar novamente"
+            g2.setFont(Font03.deriveFont(45f));
+            texto = "Jogar novamente";
+            x = obterXCentralizarTexto(texto);
+            y += gp.getTamanhoBloco() * 4;
+            desenharTextoSombra(texto, x, y);
+
+            g2.setColor(Color.WHITE);
+            g2.drawString(texto, x, y);
+            if (comandoNum == 0) g2.drawString(">", x - 40, y);
+
+            // Texto "Sair"
+            texto = "Sair";
+            x = obterXCentralizarTexto(texto);
+            y += gp.getTamanhoBloco() * 1;
+
+            desenharTextoSombra(texto, x, y);
+
+            g2.setColor(Color.WHITE);
+            g2.drawString(texto, x, y);
+            if (comandoNum == 1) g2.drawString(">", x - 40, y);
+
+
+    }
+
+
+    public void sistemaDeTrocas_vender(){
+
+        desenharInventario(gp.jogador, true);
+
+        int x;
+        int y;
+        int largura;
+        int altura;
+
+        int itemIndice=pegarItemSlot(jogadorSlotCol, jogadorSlotLinha);
+        if(itemIndice<gp.jogador.getInventario().size()){
+            /*x=(int)(gp.getTamanhoBloco()*5.5);
+            y=(int)(gp.getTamanhoBloco()*5.5);
+            largura=(int)(gp.getTamanhoBloco()*2.5);
+            altura=gp.getTamanhoBloco();
+            desenharJanela(x,y,altura,largura);
+
+             */
+            if(gp.getEventosTeclado().isEnterPressionado()){
+
+
+            }
+        }
+
+        //desenharInventario(npc, true);
+
+    }
+
+
+    public void desenharTelaAssar() {
+        g2.setColor(Color.white);
+
+        int frameX = gp.getTamanhoBloco() * 6;
+        int frameY = gp.getTamanhoBloco();
+        int frameLargura = gp.getTamanhoBloco() * 8;
+        int frameAltura = gp.getTamanhoBloco() * 8;
+
+        desenharJanela(frameX, frameY, frameLargura, frameAltura);
+
+        assarComida(frameX, frameY);
+    }
+
+
+    public void assarComida(int frameX, int frameY) {
+        int textoX = frameX + gp.getTamanhoBloco();
+        int textoY = frameY + gp.getTamanhoBloco() * 2;
+
+        // Mensagem
+        dialogoAtual = "A carne está crua.\nDeseja assar a carne?";
+        g2.setFont(Font03.deriveFont(30f));
+
+        for (String linha : dialogoAtual.split("\n")) {
+            g2.drawString(linha, textoX, textoY);
+            textoY += gp.getTamanhoBloco();
+        }
+
+        textoY += gp.getTamanhoBloco();
+
+        String texto = "Assar a carne";
+        textoX = obterXCentralizarTexto(texto);
+
+        int itemIndice = gp.getIu().pegarItemSlot(jogadorSlotCol, jogadorSlotLinha);
+
+        g2.drawString(texto, textoX, textoY);
+        if (comandoNum == 0) {
+            g2.drawString(">", textoX - 25, textoY);
+            if (gp.getEventosTeclado().isEnterPressionado()) {
+
+                boolean temFogueira = false;
+
+                for (Entidade item : gp.jogador.getInventario()) {
+                    if (item.getTipo() == gp.jogador.tipo_fogueira) {
+                        temFogueira = true;
+                        break;
+                    }
+                }
+
+                if (temFogueira) {
+
+                    if (gp.jogador.getInventario().isEmpty()) {
+                        gp.getIu().mostrarMensagem("Inventário vazio!");
+                        gp.setEstadoJogo(gp.getEstadoPlay());
+                        gp.getEventosTeclado().setEnterPressionado(false);
+                        return;
+                    }
+
+                    if (itemIndice < 0 || itemIndice >= gp.jogador.getInventario().size()) {
+                        gp.getIu().mostrarMensagem("Nenhum item selecionado!");
+                        gp.setEstadoJogo(gp.getEstadoPlay());
+                        gp.getEventosTeclado().setEnterPressionado(false);
+                        return;
+                    }
+
+                    Entidade itemSelecionado = gp.jogador.getInventario().get(itemIndice);
+                    if (itemSelecionado != null && itemSelecionado.getNome() != null) {
+                        System.out.println("Item selecionado: " + itemSelecionado.getNome()); // Debug
+
+                        if (itemSelecionado != null && itemSelecionado.getNome() != null) {
+                            String nome = itemSelecionado.getNome().toLowerCase();
+
+                            if (nome.contains("carne") && nome.contains("crua")) {
+                                // Detecta o tipo de carne crua (urso, porco, etc.)
+                                String tipo = "";
+
+                                if (nome.contains("urso")) {
+                                    tipo = "carneurso";
+                                } else if (nome.contains("porco")) {
+                                    tipo = "carneporco";
+                                } else if (nome.contains("galinha")) {
+                                    tipo = "carnegalinha";
+                                } else if (nome.contains("lobo")) {
+                                    tipo = "carnelobo";
+                                } else {
+                                    gp.getIu().mostrarMensagem("Tipo de carne desconhecido!");
+                                    return;
+                                }
+
+                                // Remove carne crua
+                                gp.jogador.getInventario().remove(itemIndice);
+
+                                // Adiciona carne assada correspondente
+                                gp.jogador.getInventario().add(new ALIMENTO_CarneAssada(gp, tipo));
+
+                                gp.getIu().mostrarMensagem("Carne assada com sucesso!");
+                                gp.setEstadoJogo(gp.getEstadoPlay());
+                            } else {
+                                gp.getIu().mostrarMensagem("Item selecionado: " + itemSelecionado.getNome() + " - Selecione uma carne crua!");
+                            }
+                        }
+
+                    } else {
+                        gp.getIu().mostrarMensagem("Item inválido selecionado!");
+                    }
+                } else {
+                    gp.getIu().mostrarMensagem("Você precisa de uma fogueira no inventário para assar!");
+                    gp.setEstadoJogo(gp.getEstadoPlay());
+                }
+
+                gp.getEventosTeclado().setEnterPressionado(false);
+            }
+        }
+
+        textoY += gp.getTamanhoBloco();
+        texto = "Comer crua";
+        textoX = obterXCentralizarTexto(texto);
+        g2.drawString(texto, textoX, textoY);
+
+        if (comandoNum == 1) {
+            g2.drawString(">", textoX - 25, textoY);
+            if (gp.getEventosTeclado().isEnterPressionado()) {
+
+
+                itemIndice = gp.getIu().pegarItemSlot(jogadorSlotCol, jogadorSlotLinha);
+
+                if (itemIndice >= 0 && itemIndice < gp.jogador.getInventario().size()) {
+                    Entidade itemSelecionado = gp.jogador.getInventario().get(itemIndice);
+
+                    if (itemSelecionado.getTipo() == gp.jogador.getTipo_dropavelConsumivel()) {
+                        if (gp.jogador.getFome() < gp.jogador.getFomeMaxima()) {
+                            itemSelecionado.usar(gp.jogador);
+                            gp.jogador.getInventario().remove(itemIndice);
+                            gp.getIu().mostrarMensagem("Você comeu a carne crua...");
+                            gp.setEstadoJogo(gp.getEstadoPlay());
+                        } else {
+                            gp.setEstadoJogo(gp.getEstadoDialogo());
+                            gp.getIu().setDialogoAtual("Você já está satisfeito.\nNão pode comer mais agora.");
+
+                        }
+                    } else {
+                        gp.getIu().mostrarMensagem("Isso não pode ser comido cru.");
+                        gp.setEstadoJogo(gp.getEstadoDialogo());
+                    }
+                } else {
+                    gp.getIu().mostrarMensagem("Nenhum item selecionado!");
+                    gp.setEstadoJogo(gp.getEstadoPlay());
+                }
+
+                gp.getEventosTeclado().setEnterPressionado(false);
+            }
+        }
+    }
+
+    public void desenharOpcoesMenu(){
+
+        g2.setColor(Color.white);
+
+        int frameX = gp.getTamanhoBloco() * 6;
+        int frameY = gp.getTamanhoBloco();
+        int frameLargura = gp.getTamanhoBloco() * 10;
+        int frameAltura = gp.getTamanhoBloco() * 8;
+
+        desenharJanela(frameX, frameY, frameLargura, frameAltura);
+
+        switch(subEstado){
+            case 0: opcoes_topo(frameX, frameY);break;
+            case 1: opcoes_TelaCheiaNotificacao(frameX, frameY); break;
+            case 2: opcoes_controle(frameX, frameY); break;
+            case 3: opcoes_confirmacaoFimDeJogo(frameX,frameY);break;
+        }
+
+
+        gp.getEventosTeclado().setEnterPressionado(false);
+
+    }
+
+    public void opcoes_topo(int frameX, int frameY){
+
+        int textoX;
+        int textoY;
+
+        String texto="Menu";
+        textoX=obterXCentralizarTexto(texto);
+        textoY=frameY+gp.getTamanhoBloco();
+        g2.setColor(Color.WHITE);
+        g2.setFont(Font03.deriveFont(30f));
+        g2.drawString(texto, textoX, textoY);
+
+        textoX=frameX+gp.getTamanhoBloco();
+        textoY+=gp.getTamanhoBloco()*2;
+        g2.drawString("Tela cheia", textoX, textoY);
+        if(comandoNum==0){
+            g2.drawString(">", textoX-25, textoY);
+            if(gp.getEventosTeclado().isEnterPressionado()){
+                if(!gp.isTelaCheiaOn()){
+                    gp.setTelaCheiaOn(true);
+                } else if(gp.isTelaCheiaOn()){
+                    gp.setTelaCheiaOn(false);
+                }
+                subEstado=1;
+            }
+
+        }
+
+        textoY+=gp.getTamanhoBloco();
+        g2.drawString("Música", textoX, textoY);
+        if(comandoNum==1){
+            g2.drawString(">", textoX-25, textoY);
+        }
+        textoY+=gp.getTamanhoBloco();
+        g2.drawString("Efeito Sonoro", textoX, textoY);
+        if(comandoNum==2){
+            g2.drawString(">", textoX-25, textoY);
+        }
+        textoY+=gp.getTamanhoBloco();
+        g2.drawString("Controles", textoX, textoY);
+        if(comandoNum==3){
+            g2.drawString(">", textoX-25, textoY);
+            if(gp.getEventosTeclado().isEnterPressionado()){
+                subEstado=2;
+                comandoNum=0;
+            }
+        }
+        textoY+=gp.getTamanhoBloco();
+        g2.drawString("Sair do jogo", textoX, textoY);
+        if(comandoNum==4){
+            g2.drawString(">", textoX-25, textoY);
+            if(gp.getEventosTeclado().isEnterPressionado()){
+                subEstado=3;
+                comandoNum=0; // Começa com a opção "Sim" selecionada
+            }
+        }
+
+
+        textoY+=gp.getTamanhoBloco()*2;
+        g2.drawString("Voltar", textoX, textoY);
+        if (comandoNum == 5) {
+            g2.drawString(">", textoX - 25, textoY);
+            if (gp.getEventosTeclado().isEnterPressionado()) {
+                gp.setEstadoJogo(gp.getEstadoPlay()); // ou outro estado que represente o jogo ativo
+                gp.getEventosTeclado().setEnterPressionado(false); // importante resetar o ENTER
+            }
+        }
+
+        textoX= frameX+(int)(gp.getTamanhoBloco()*4.5);
+        textoY=frameY+gp.getTamanhoBloco()*2+24;
+        g2.setStroke(new BasicStroke(3));
+        g2.drawRect(textoX,textoY,24,24);
+        if(gp.isTelaCheiaOn()){
+            g2.fillRect(textoX,textoY,24,24);
+        }
+
+
+
+        textoY+=gp.getTamanhoBloco();
+        g2.drawRect(textoX,textoY,120,24);
+
+        textoY+=gp.getTamanhoBloco();
+        g2.drawRect(textoX,textoY,120,24);
+
+    }
+
+    public void opcoes_TelaCheiaNotificacao(int frameX, int frameY){
+
+        int textoX=frameX+gp.getTamanhoBloco();
+        int textoY=frameY+gp.getTamanhoBloco()*3;
+
+        dialogoAtual="A mudança fará efeito\napós reiniciar o jogo.";
+        g2.setFont(Font03.deriveFont(32f));
+        for(String linha:dialogoAtual.split("\n")){
+            g2.drawString(linha, textoX, textoY);
+            textoY+=40;
+        }
+
+        g2.setFont(Font03.deriveFont(30f));
+
+        textoY+=(int)(gp.getTamanhoBloco()*4.34);
+        g2.drawString("Voltar", textoX, textoY);
+        if(comandoNum==0){
+            g2.drawString(">", textoX-25, textoY);
+            if(gp.getEventosTeclado().isEnterPressionado()){
+                subEstado=0;
+            }
+        }
+
+    }
+
+    public void opcoes_controle(int frameX, int frameY) {
+        int textoX, textoY;
+
+        // Título "Controles"
+        String titulo = "Controles";
+        textoX = obterXCentralizarTexto(titulo);
+        textoY = frameY + gp.getTamanhoBloco();
+        g2.setFont(Font03.deriveFont(30f));
+        g2.drawString(titulo, textoX, textoY);
+
+        // Configurações iniciais
+        g2.setFont(Font03.deriveFont(30f));
+        textoX = frameX + gp.getTamanhoBloco();
+        textoY += gp.getTamanhoBloco();
+
+        // Lista de ações e teclas
+        String[] acoes = {
+                "Movimentar",
+                "Confirmar / Atacar",
+                "Pausar",
+                "Menu",
+                "Descrição do mapa",
+                "Inventário / Status"
+        };
+
+        String[] teclas = {
+                "WASD",
+                "ENTER",
+                "P",
+                "ESC",
+                "M",
+                "C"
+        };
+
+        for (int i = 0; i < acoes.length; i++) {
+            g2.drawString(acoes[i], textoX, textoY);
+            g2.drawString(teclas[i], textoX + (int)(gp.getTamanhoBloco() * 4.8), textoY);
+            textoY += gp.getTamanhoBloco();
+        }
+
+        textoY += gp.getTamanhoBloco();
+        g2.drawString("Voltar", textoX, textoY);
+        if (comandoNum == 0) {
+            g2.drawString(">", textoX - 25, textoY);
+            if (gp.getEventosTeclado().isEnterPressionado()) {
+                subEstado = 0;
+            }
+        }
+    }
+
+    public void opcoes_confirmacaoFimDeJogo(int frameX, int frameY){
+
+        int textoX = frameX + gp.getTamanhoBloco();
+        int textoY = frameY + gp.getTamanhoBloco() * 3;
+
+        // Mensagem de confirmação
+        dialogoAtual = "Sair do jogo e retornar\npara a tela inicial?";
+        g2.setFont(Font03.deriveFont(30f)); // Garanta o tamanho da fonte
+
+        for (String linha : dialogoAtual.split("\n")) {
+            g2.drawString(linha, textoX, textoY);
+            textoY += gp.getTamanhoBloco();  // altura entre as linhas
+        }
+
+        textoY += gp.getTamanhoBloco(); // Adiciona espaço entre o texto e as opções
+
+        String texto = "Sim";
+        textoX = obterXCentralizarTexto(texto); // Centraliza o texto
+        g2.drawString(texto, textoX, textoY);
+        if (comandoNum == 0) {
+            g2.drawString(">", textoX - 25, textoY);
+            if (gp.getEventosTeclado().isEnterPressionado()) {
+                subEstado = 0;
+                gp.setEstadoJogo(gp.getEstadoTitulo());
+                gp.getIu().setTelaMenu(0);
+                gp.getIu().setComandoNum(0);
+                gp.restart();
+
+            }
+        }
+
+        // Opção "Não"
+        textoY += gp.getTamanhoBloco(); // Espaço para a próxima opção
+        texto = "Não";
+        textoX = obterXCentralizarTexto(texto); // Centraliza novamente
+        g2.drawString(texto, textoX, textoY);
+        if (comandoNum == 1) {
+            g2.drawString(">", textoX - 25, textoY);
+            if (gp.getEventosTeclado().isEnterPressionado()) {
+                subEstado = 0;
+                comandoNum = 4; // Volta para a opção "Sair do jogo"
+            }
+        }
+    }
+
+
+    public void desenharNomeMapa(Graphics2D g2) {
+        int mapaAtual = gp.getMapaAtual();
+
+        if (gp.getEstadoJogo() == gp.getEstadoPlay()) {
+
+            if (mapaAtual != ultimoMapa) {
+                ultimoMapa = mapaAtual;
+                mostrandoMensagem = true;
+                contadorFade = 0;
+                alphaMensagem = 0;
+
+                if (mapaAtual == 0) {
+                    textoMapaAtual = "Floresta";
+                } else if (mapaAtual == 1) {
+                    textoMapaAtual = "Lago e Rio";
+                } else if (mapaAtual == 2) {
+                    textoMapaAtual = "Ruínas";
+                } else if(mapaAtual==3){
+                    textoMapaAtual="Montanha";
+                } else if(mapaAtual==4) {
+                    textoMapaAtual="Caverna";
+                }
+
+            }
+
+            if (mostrandoMensagem) {
+                int duracaoFadeIn = 150;
+                int duracaoFixo = 360;
+                int duracaoFadeOut = 150;
+
+                // Fade-in
+                if (contadorFade <= duracaoFadeIn) {
+                    alphaMensagem = (int)((contadorFade / (float)duracaoFadeIn) * 255);
+                }
+                // Mensagem fixa
+                else if (contadorFade <= duracaoFadeIn + duracaoFixo) {
+                    alphaMensagem = 255;
+                }
+                // Fade-out
+                else if (contadorFade <= duracaoFadeIn + duracaoFixo + duracaoFadeOut) {
+                    int fadeOutContador = contadorFade - duracaoFadeIn - duracaoFixo;
+                    alphaMensagem = 255 - (int)((fadeOutContador / (float)duracaoFadeOut) * 255);
+                } else {
+                    mostrandoMensagem = false;
+                }
+
+                contadorFade++;
+
+
+                int x = 40; // margem à esquerda
+                int y = gp.getTelaAltura() - 60; // 20 pixels acima da parte inferior
+
+                g2.setFont(Font05.deriveFont(30f));
+
+                g2.setColor(new Color(0f, 0f, 0f, alphaMensagem / 255f)); // sombra preta com alpha
+                g2.drawString(textoMapaAtual, x + 2, y + 2); // deslocamento leve para dar efeito
+
+
+                g2.setColor(new Color(1f, 1f, 1f, alphaMensagem / 255f)); // branco com alpha
+                g2.drawString(textoMapaAtual, x, y);
+
+            }
+        }
     }
 
     public void setDialogos(String[] dialogos) {
@@ -217,9 +925,8 @@ public class InterfaceUsuario {
 
         return linhas;
     }
-
     public void desenharTelaJogoFinalizado() {
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
 
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, gp.getTelaLargura(), gp.getTelaAltura());
@@ -248,8 +955,9 @@ public class InterfaceUsuario {
 
         g2.setColor(Color.WHITE);
         g2.drawString(texto, x, y);
-        if (comandoNum == 0) g2.drawString(">", x - 40, y);
         desenharTextoSombra(texto,x,y);
+        if (comandoNum == 0) g2.drawString(">", x - 40, y);
+
 
         // Texto "Sair" com borda
         texto = "Sair";
@@ -261,12 +969,10 @@ public class InterfaceUsuario {
 
         g2.setColor(Color.WHITE);
         g2.drawString(texto, x, y);
+        desenharTextoSombra(texto,x,y);
         if (comandoNum == 1) g2.drawString(">", x - 40, y);
 
-        desenharTextoSombra(texto,x,y);
     }
-
-
 
     public void desenharStatusPersonagem() {
 
@@ -315,13 +1021,36 @@ public class InterfaceUsuario {
 
     }
 
-    public void desenharInventario() {
+    public void desenharInventario(Entidade entidade, boolean cursor) {
+
+        int frameX = 0;
+        int frameY = 0;
+        int frameLargura = 0;
+        int frameAltura = 0;
+        int slotColuna=0;
+        int slotLinha=0;
+
+        if(entidade==gp.jogador){
+             frameX = gp.getTamanhoBloco() * 12;
+             frameY = gp.getTamanhoBloco();
+             frameLargura = gp.getTamanhoBloco() * 6;
+             frameAltura = gp.getTamanhoBloco() * 5;
+             slotColuna=jogadorSlotCol;
+             slotLinha=jogadorSlotLinha;
+
+        }
+
+        else {
+            frameX = gp.getTamanhoBloco() * 2;
+            frameY = gp.getTamanhoBloco();
+            frameLargura = gp.getTamanhoBloco() * 6;
+            frameAltura = gp.getTamanhoBloco() * 5;
+            slotColuna = npcSlotCol;
+            slotLinha = npcSlotLinha;
+        }
 
         // Frame
-        int frameX = gp.getTamanhoBloco() * 9;
-        int frameY = gp.getTamanhoBloco();
-        int frameLargura = gp.getTamanhoBloco() * 6;
-        int frameAltura = gp.getTamanhoBloco() * 5;
+
 
         desenharJanela(frameX, frameY, frameAltura, frameLargura);
 
@@ -333,9 +1062,15 @@ public class InterfaceUsuario {
 
         // Itens
 
-        for (int i = 0; i < gp.jogador.getInventario().size(); i++) {
+        for (int i = 0; i < entidade.getInventario().size(); i++) {
 
-            g2.drawImage(gp.jogador.getInventario().get(i).getDown1(), slotX, slotY, null);
+            if(entidade.getInventario().get(i)==entidade.getArmaAtual()){
+
+                g2.setColor(new Color(240,190,90));
+                g2.fillRoundRect(slotX, slotY, gp.getTamanhoBloco(), gp.getTamanhoBloco(), 10, 10);
+            }
+
+            g2.drawImage(entidade.getInventario().get(i).getDown1(), slotX, slotY, null);
 
             slotX += gp.getTamanhoBloco();
 
@@ -346,54 +1081,54 @@ public class InterfaceUsuario {
 
         }
 
+        if(cursor==true){
 
-        // Cursor
+            int cursorX = slotXstart + (gp.getTamanhoBloco() * slotColuna);
+            int cursorY = slotYstart + (gp.getTamanhoBloco() * slotLinha);
+            int cursorAltura = gp.getTamanhoBloco();
+            int cursorLargura = gp.getTamanhoBloco();
 
-        int cursorX = slotXstart + (gp.getTamanhoBloco() * slotCol);
-        int cursorY = slotYstart + (gp.getTamanhoBloco() * slotLinha);
-        int cursorAltura = gp.getTamanhoBloco();
-        int cursorLargura = gp.getTamanhoBloco();
+            g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(3));
+            g2.drawRoundRect(cursorX, cursorY, cursorLargura, cursorAltura, 10, 10);
 
-        g2.setColor(Color.WHITE);
-        g2.setStroke(new BasicStroke(3));
-        g2.drawRoundRect(cursorX, cursorY, cursorLargura, cursorAltura, 10, 10);
+            // Tela descricao
 
-        // Tela descricao
-
-        int dFrameX=frameX;
-        int dFrameY=frameY + frameAltura;
-        int dFrameLargura=frameLargura;
-        int dFrameAltura=gp.getTamanhoBloco()*4;
+            int dFrameX=frameX;
+            int dFrameY=frameY + frameAltura;
+            int dFrameLargura=frameLargura;
+            int dFrameAltura=gp.getTamanhoBloco()*4;
 
 
-        int textoX= dFrameX+20;
-        int textoY=frameY+gp.getTamanhoBloco()+230;
-        g2.setFont(Font03.deriveFont(25f));
+            int textoX= dFrameX+20;
+            int textoY=frameY+gp.getTamanhoBloco()+230;
+            g2.setFont(Font03.deriveFont(25f));
 
-        int itemIndice=pegarItemSlot();
+            int itemIndice=pegarItemSlot(slotColuna, slotLinha);
 
-        if (itemIndice < gp.jogador.getInventario().size()) {
+            if (itemIndice < entidade.getInventario().size()) {
 
-            desenharJanela(dFrameX, dFrameY, dFrameAltura, dFrameLargura);
+                desenharJanela(dFrameX, dFrameY, dFrameAltura, dFrameLargura);
 
-            for(String linha:gp.jogador.getInventario().get(itemIndice).getDescricao().split("\n")){
-                g2.drawString(linha, textoX, textoY);
-                textoY+=26;
+                for(String linha:entidade.getInventario().get(itemIndice).getDescricao().split("\n")){
+                    g2.drawString(linha, textoX, textoY);
+                    textoY+=26;
+
+                }
 
             }
-
 
         }
 
 
+
     }
 
-    public int pegarItemSlot(){
+    public int pegarItemSlot(int slotColuna, int slotLinha){
 
-        int itemIndice= slotCol+(slotLinha*5);
+        int itemIndice= slotColuna+(slotLinha*5);
         return itemIndice;
     }
-
 
     public void desenharVidaJogador() {
         int x = gp.getTamanhoBloco() / 2;
@@ -426,29 +1161,30 @@ public class InterfaceUsuario {
             x += gp.getTamanhoBloco();
         }
 
+
     }
 
 
     public void desenharTelaDialogo() {
-
-        int x = gp.getTamanhoBloco() / 2;
+        int x = gp.getTamanhoBloco() * 4;
         int y = gp.getTamanhoBloco() / 2;
-        int altura = gp.getTamanhoBloco() * 8;
-        int largura = gp.getTamanhoBloco() * 4;
+        int largura =gp.getTelaAltura() - (gp.getTamanhoBloco()/6);
+        int altura = gp.getTamanhoBloco() * 4;
 
-
-        desenharJanela(x, y, largura, altura);
+        // Corrigido: largura antes de altura
+        desenharJanela(x, y, altura, largura);
 
         g2.setFont(Font03.deriveFont(25f));
         x += gp.getTamanhoBloco() / 2;
         y += gp.getTamanhoBloco();
 
-        for (String linha : getDialogoAtual().split("\n")) {
-            g2.drawString(linha, x, y);
-            y += 30; // Ajuste a distância entre as linhas
+        String dialogo = getDialogoAtual();
+        if (dialogo != null) {
+            for (String linha : dialogo.split("\n")) {
+                g2.drawString(linha, x, y);
+                y += 30;
+            }
         }
-
-
     }
 
     public void desenharJanela(int x, int y, int altura, int largura) {
@@ -467,12 +1203,28 @@ public class InterfaceUsuario {
 
     }
 
+
+    private String historiaCompleta = "Num mundo devastado, onde a natureza resiste\n"
+            + "e a tecnologia ruiu, poucos permanecem.\n"
+            + "Você é parte dos últimos sobreviventes\n"
+            + "em busca de um novo começo na Última Fronteira.\n\n"
+            + "Escolha com sabedoria. Cada passo será decisivo.";
+
+    private String textoAtual = "";  // Vai crescendo letra por letra
+    private int contadorLetra = 0;
+    private long ultimoTempo = 0;
+    private long intervalo = 60; // milissegundos
+    private boolean historiaCompletaExibida = false;
+    float alpha = 0.0f;
+    boolean fadeInAtivo = false;
+
+
     public void desenharTelaTitulo() {
 
         if (telaMenu == 0) {
 
             // Desenha o fundo na tela
-            g2.drawImage(fundo2, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
+            g2.drawImage(fundo, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
 
             // Título
             g2.setColor(Color.BLACK);
@@ -507,13 +1259,47 @@ public class InterfaceUsuario {
                     g2.drawString(">", xTexto - gp.getTamanhoBloco(), yTexto);
                 }
             }
-        } else if (telaMenu == 1) {
+        } else if (telaMenu == 1) { // Tela da história do jogo
 
-            //gp.telaMenuPersonagens.paintComponent(g2);
+            g2.drawImage(fundoHistoria, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Fundo
 
-            //gp.telaMenuPersonagens.desenhar(g2);
+            g2.setColor(Color.black);
+            g2.setFont(Font05.deriveFont(32f));
 
-            g2.drawImage(fundo2, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
+            String historia =
+                    "Num mundo devastado, onde a natureza resiste\n" +
+                            "e a tecnologia ruiu, poucos permanecem.\n" +
+                            "Você é parte dos últimos sobreviventes\n" +
+                            "em busca de um novo começo na Última Fronteira.\n\n" +
+                            "Escolha com sabedoria. Cada passo será decisivo.";
+
+            String[] linhas = historia.split("\n");
+            int y = gp.getTamanhoBloco() * 4;
+
+            long agora = System.currentTimeMillis();
+            if (!historiaCompletaExibida && contadorLetra < historiaCompleta.length()) {
+                if (agora - ultimoTempo >= intervalo) {
+                    textoAtual += historiaCompleta.charAt(contadorLetra);
+                    contadorLetra++;
+                    ultimoTempo = agora;
+                }
+            }
+
+            if (contadorLetra >= historiaCompleta.length()) {
+                historiaCompletaExibida = true;
+            }
+
+            linhas = textoAtual.split("\n");
+            y = gp.getTamanhoBloco() * 4;
+            for (String linha : linhas) {
+                int x = obterXCentralizarTexto(linha);
+                g2.drawString(linha, x, y);
+                //desenharTextoSombra(linha, x, y);
+                y += 40;
+            }}else if (telaMenu == 2) {
+
+            g2.drawImage(fundo, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
+
 
             g2.setColor(Color.WHITE);
             g2.setFont(Font03.deriveFont(40f));
@@ -592,16 +1378,15 @@ public class InterfaceUsuario {
             }
 
 
-        } else if (telaMenu == 2) { // Tela de Descrição do Personagem
-            // Definindo o fundo
-            //g2.setColor(Color.BLACK);
-            //g2.fillRect(0, 0, gp.getTelaLargura(), gp.getTelaAltura());
-            g2.drawImage(fundo2, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
+        } else if (telaMenu == 3) { // Tela de Descrição do Personagem
+
+            g2.drawImage(fundo, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
 
 
             // Definindo a cor e a fonte do texto
             g2.setColor(Color.WHITE);
             g2.setFont(Font03.deriveFont(35f)); // Ajuste de tamanho da fonte
+
 
             // Descrição e vantagens de cada personagem
             String descricao = "";
@@ -610,20 +1395,22 @@ public class InterfaceUsuario {
                 descricao = "Kael Thorn é um rastreador experiente, conhecido por seu instinto quase sobrenatural para encontrar comida e água em qualquer ambiente. Seus olhos atentos e seu faro aguçado o tornam essencial para qualquer expedição perigosa. Ágil, silencioso e resiliente, Kael aprendeu a ler os menores sinais da natureza para sobreviver onde poucos conseguiriam."
                 ;
                 nome = "O RASTREADOR";
-                g2.drawImage(fundo2, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null);
+                g2.drawImage(fundo, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null);
             } else if (personagemSelecionado.equals("O MÉDICO")) {
                 descricao = "Lysander Curavita é um médico habilidoso, capaz de curar ferimentos com os recursos que a natureza oferece. Sua experiência o torna capaz de restaurar a saúde mesmo sem o uso de itens raros. Astuto e compassivo, ele transforma o comum em remédio, sendo uma fonte de esperança em tempos de necessidade.";
                 nome = "O MÉDICO";
-                g2.drawImage(fundo2, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
+                g2.drawImage(fundo, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
             } else if (personagemSelecionado.equals("A MECÂNICA")) {
                 descricao = "Kaela Forjaterra é uma mecânica determinada, com o dom de reparar ferramentas danificadas e criar novas armas a partir do que tiver em mãos. Com poucas peças e muita engenhosidade, Kaela garante que os equipamentos estejam sempre prontos para o próximo desafio.";
                 nome = "A MECÂNICA";
-                g2.drawImage(fundo2, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
+                g2.drawImage(fundo, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
             } else if (personagemSelecionado.equals("A SOBREVIVENTE")) {
                 descricao = "Elyra Sylvanis é uma elfa sobrevivente , cuja conexão com a natureza a torna menos vulnerável às necessidades de comida e água. Sua resistência a esses elementos lhe permite explorar os ambientes mais áridos e selvagens sem sofrer tanto com a escassez. Elyra navega pelos terrenos mais hostis com graça e eficácia, sempre atenta ao que o ambiente tem a oferecer.";
                 nome = "A SOBREVIVENTE";
-                g2.drawImage(fundo2, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
+                g2.drawImage(fundo, 0, 0, gp.getTelaLargura(), gp.getTelaAltura(), null); // Ajusta a imagem de fundo à tela
             }
+
+
 
             // Calcular a largura máxima para o texto (por exemplo, 80% da largura total)
             int larguraMaxima = (int) (gp.getTelaLargura() * 0.9);
@@ -668,7 +1455,16 @@ public class InterfaceUsuario {
             desenharTextoSombra(instrucoes, x, 500);
 
         }
+
     }
+
+    public void reiniciarEfeitoDigitacao() {
+        textoAtual = "";
+        contadorLetra = 0;
+        ultimoTempo = 0;
+        historiaCompletaExibida = false;
+    }
+
 
     public void desenharTextoSombra(String texto, int x, int y) {
         // Cor da borda (preta)
@@ -713,6 +1509,103 @@ public class InterfaceUsuario {
 
     }
 
+    public void exibirInformacoesDoMapa(Graphics2D g2, String titulo, String descricao, String atributos, String recursos, String eventos) {
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, gp.getTelaLargura(), gp.getTelaAltura());
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+
+        g2.setColor(Color.WHITE);
+        g2.setFont(Font05.deriveFont(35f));
+
+        int x = obterXCentralizarTexto(titulo);
+        int y = 90;
+        g2.drawString(titulo, x, y);
+        desenharTextoSombra(titulo, x, y);
+
+        int larguraMaxima = (int) (gp.getTelaLargura() * 0.9);
+        int margemEsquerda = gp.getTamanhoBloco();
+        y = gp.getTelaAltura() - 380;
+        int espacoEntreLinhas = 25;
+
+        g2.setFont(Font03.deriveFont(25f));
+
+        for (String linha : quebrarTexto(descricao, larguraMaxima)) {
+            g2.drawString(linha, margemEsquerda, y);
+            y += espacoEntreLinhas;
+        }
+
+        y += 20;
+        for (String linha : quebrarTexto(atributos, larguraMaxima)) {
+            g2.drawString(linha, margemEsquerda, y);
+            y += espacoEntreLinhas;
+        }
+
+        y += 20;
+        for (String linha : quebrarTexto(recursos, larguraMaxima)) {
+            g2.drawString(linha, margemEsquerda, y);
+            y += espacoEntreLinhas;
+        }
+
+        y += 20;
+        for (String linha : quebrarTexto(eventos, larguraMaxima)) {
+            g2.drawString(linha, margemEsquerda, y);
+            y += espacoEntreLinhas;
+        }
+    }
+
+
+    public void desenharTelaDescricao() {
+
+        if(gp.getMapaAtual()==0){
+            exibirInformacoesDoMapa(
+                    g2,
+                    "FLORESTA",
+                    "Uma área rica em recursos naturais, mas também habitada por predadores.",
+                    "Atributos adicionais: [Vegetação densa] [Fauna abundante] [Clima úmido]",
+                    "Recursos disponíveis: [Frutas, raízes e cogumelos] [Madeira para fogueiras e ferramentas] [Pequenos animais para caça]",
+                    "Eventos comuns: [Ataque de lobo] [Encontro com um explorador perdido] [Chuva intensa, dificultando a exploração]"
+            );
+
+
+        } else if(gp.getMapaAtual()==1){
+            exibirInformacoesDoMapa(g2,
+                    "LAGO E RIO",
+                    "Regiões ricas em água, mas que podem esconder riscos como afogamento ou\n" +
+                            "criaturas aquáticas.",
+                    "Atributos adicionais: [Água abundante] [Possibilidade de pesca] [Terreno lamacento]",
+                    "Recursos disponíveis: [Peixes e algas comestíveis] [Água doce] [Vegetação ribeirinha]",
+                    "Eventos comuns: [Ataque de criatura aquática] [Tempestade] [Encontro de um barco abandonado]"
+                    );
+
+        } else if(gp.getMapaAtual()==2){
+            exibirInformacoesDoMapa(g2,
+                    "RUÍNAS ABANDONADAS",
+                    "Restos de antigas construções que podem conter suprimentos valiosos ou armadilhas.",
+                    "Atributos adicionais: [Estruturas instáveis] [Presença de outros sobreviventes] [Baixo risco climático]",
+                    "Recursos disponíveis: [Ferramentas antigas e munição] [Alimentos enlatados ainda comestíveis] [Mapas e pistas sobre o ambiente ao redor]",
+                    "Eventos comuns: [Encontrar um grupo de sobreviventes] [Armadilhas deixadas por antigos ocupantes] [Descoberta de uma passagem secreta para outra área]"
+                    );
+        } else if(gp.getMapaAtual()==3){
+            exibirInformacoesDoMapa(g2,
+                    "MONTANHA",
+                    "Uma região de difícil acesso, mas rica em minérios e pedras preciosas.",
+                    "Atributos adicionais: [Terreno acidentado] [Clima instável] [Baixa vegetação]",
+                    "Recursos disponíveis: [Minérios e pedras preciosas] [Água de degelo] [Refúgios naturais em cavernas]",
+                    "Eventos comuns: [Nevasca repentina] [Deslizamento de pedras] [Descoberta de uma caverna segura]");
+        } else if(gp.getMapaAtual()==4){
+            exibirInformacoesDoMapa(g2,
+                    "CAVERNA",
+                    "Um ambiente subterrâneo que pode oferecer abrigo contra o clima, mas esconde\n" +
+                            "perigos desconhecidos.",
+                    "Atributos adicionais: [Pouca luz] [Presença de criaturas desconhecidas] [Água de gotejamento]",
+                    "Recursos disponíveis: [Rochas e minérios raros] [Pequenos lagos subterrâneos] [Ossos e vestígios de exploradores antigos]",
+                    "Eventos comuns: [Encontro com uma criatura hostil] [Descoberta de um túnel oculto] [Desmoronamento parcial]");
+        }
+
+
+    }
+
 
     public int obterXCentralizarTexto(String texto) {
 
@@ -735,7 +1628,6 @@ public class InterfaceUsuario {
         g2.setColor(Color.WHITE);
         g2.drawString(texto, x, y);
     }
-
 
 
 }

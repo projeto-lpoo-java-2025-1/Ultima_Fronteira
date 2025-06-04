@@ -10,8 +10,11 @@ public class EventoDoencaFerimento {
 
 
     private int contadorDesidratacao = 0;
-    private final int intervaloDesidratacao = 600; // a cada 120 frames (2 segundos)
+    private final int intervaloDesidratacao = 600;
 
+    private int contadorDesmoronamento=0;
+    private final int intervaloDesmoronamento=200;
+    private boolean desmoronamentoAtivo=false;
     private int contadorInfeccao = 0;
     private final int intervaloInfeccao = 100; // por exemplo, 600 frames (~10 segundos se rodar a 60fps)
 
@@ -53,8 +56,16 @@ public class EventoDoencaFerimento {
             Random random = new Random();
             int chance = random.nextInt(100); // 0 a 99
 
-            if (chance < 60) {
-                gp.jogador.setInfectado(true);
+            if (chance < 100) {
+                String personagem=gp.getPersonagemSelecionado();
+                if("médico".equals(personagem)){
+                    gp.jogador.setVida(gp.jogador.getVida()-1);
+
+                }
+                else{
+                    gp.jogador.setVida(gp.jogador.getVida()-2);
+                }
+
                 gp.getIu().setDialogoAtual("Você bebeu água\ncontaminada\ne foi infectado!");
             } else {
                 gp.getIu().setDialogoAtual("Você bebeu água\ncontaminada,\nmas não ficou infectado.");
@@ -66,28 +77,6 @@ public class EventoDoencaFerimento {
 
     }
 
-    public void eventoInfectado() {
-
-        String personagem = gp.getPersonagemSelecionado();
-
-        if (gp.jogador.isInfectado()) {
-
-            contadorInfeccao++;
-            if (contadorInfeccao >= intervaloInfeccao) {
-                gp.jogador.setVida(gp.jogador.getVida() - 1);
-                contadorInfeccao = 0;
-
-                gp.setEstadoJogo(gp.getEstadoDialogo());
-                gp.getIu().setDialogoAtual("Você está infectado!\nPerdeu 1 ponto de vida.");
-            }
-
-
-        } else {
-            // Se não está infectado, reseta o contador
-            contadorInfeccao = 0;
-        }
-
-    }
 
     public void delirio () {
         if (gp.jogador.getSanidade() <= 2 || gp.jogador.isDesidratado()) {
@@ -97,6 +86,48 @@ public class EventoDoencaFerimento {
         } else {
             gp.setMostrarEfeitoConfusao(false);
             gp.jogador.setVelocidade(2); // velocidade normal
+        }
+    }
+
+    private final Random random = new Random();
+
+    public void eventoDesmoronamento(int mapa) {
+        if (mapa == gp.getMapaAtual()) {
+            if (contadorDesmoronamento >= intervaloDesmoronamento) {
+                int chanceMaxima;
+                switch (mapa) {
+                    case 0:
+                        chanceMaxima = 0;
+                        break;
+                    case 1:
+                        chanceMaxima = 0;
+                        break;
+                    case 2:
+                        chanceMaxima = 0;
+                        break;
+                    case 3:
+                        chanceMaxima = 30;
+                        break;
+                    default:
+                        chanceMaxima = 0;
+                        break;
+                }
+
+                int chance = random.nextInt(100);
+                if (chance < chanceMaxima) {
+                    gp.setEstadoJogo(gp.getEstadoDialogo());
+                    gp.getIu().setDialogoAtual("[DESMORONAMENTO]\nUm aterrorizante tremor faz a\nterradesabar, causando dano e\nfadiga.");
+                    gp.jogador.setVida(gp.jogador.getVida() - 1);
+                    gp.jogador.setEnergia(gp.jogador.getEnergia() - 1);
+                    gp.setMostraEfeitoDesmoronamento(true);
+                    desmoronamentoAtivo = true;
+                }
+
+                contadorDesmoronamento = 0; // Reseta o contador após a verificação
+            } else {
+                contadorDesmoronamento++;
+                gp.setMostraEfeitoDesmoronamento(false);
+            }
         }
     }
 }

@@ -1,29 +1,33 @@
 package gui.criaturas;
 
+import enums.TipoAcaoCriatura;
+import eventos.EventoCriatura;
 import gui.entidades.Entidade;
+import gui.itens.ALIMENTO_Carne;
 import gui.system.PainelJogo;
+import personagens.Criatura;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.IOException;
 import java.util.Random;
 
 public class CRI_Lobo extends Entidade {
 
     private PainelJogo gp;
 
+    private Criatura criaturaLogica;
     private Random aleatorio = new Random();
 
     public CRI_Lobo(PainelJogo gp){
 
         super(gp);
+        this.gp=gp;
+        this.criaturaLogica=new Criatura("Lobo", 2, 6, TipoAcaoCriatura.MORDIDA);
+        setTipo(getTipo_criatura());
 
-        setTipo(2);
-
-        setNome("Lobo");
+        setNome(criaturaLogica.getNome());
         setVelocidade(1);
-        setVidaMaxima(6);
-        setVida(getVidaMaxima());
+        setVidaMaxima(criaturaLogica.getVida());
+        setVida(criaturaLogica.getVida());
 
         setAreaSolida(new Rectangle(3, 18, 42, 30));
         setAreaSolidaPadraoX(getAreaSolida().x);
@@ -35,22 +39,17 @@ public class CRI_Lobo extends Entidade {
 
     public void carregarImagemLobo() {
 
-        try {
-            setUp1(ImageIO.read(getClass().getResourceAsStream("/animais/lobo01.png")));
-            setUp2(ImageIO.read(getClass().getResourceAsStream("/animais/lobo02.png")));
-            setDown1(ImageIO.read(getClass().getResourceAsStream("/animais/lobo03.png")));
-            setDown2(ImageIO.read(getClass().getResourceAsStream("/animais/lobo04.png")));
-            setLeft1(ImageIO.read(getClass().getResourceAsStream("/animais/lobo05.png")));
-            setLeft2(ImageIO.read(getClass().getResourceAsStream("/animais/lobo06.png")));
-            setRight1(ImageIO.read(getClass().getResourceAsStream("/animais/lobo07.png")));
-            setRight2(ImageIO.read(getClass().getResourceAsStream("/animais/lobo08.png")));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setUp1(setup("/animais/lobo_up_01", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setUp2(setup("/animais/lobo_up_02", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setDown1(setup("/animais/lobo_down_01", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setDown2(setup("/animais/lobo_down_02", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setLeft1(setup("/animais/lobo_left_01", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setLeft2(setup("/animais/lobo_left_02", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setRight1(setup("/animais/lobo_right_01", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setRight2(setup("/animais/lobo_right_02", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
 
 
-        }
+    }
 
 
     public void setAcao(){
@@ -77,6 +76,14 @@ public class CRI_Lobo extends Entidade {
 
         }
 
+
+
+    }
+
+
+    public void checarDrop() {
+
+        droparItem(new ALIMENTO_Carne(gp, "carnelobo"));
 
     }
 }

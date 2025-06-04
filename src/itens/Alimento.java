@@ -47,7 +47,7 @@ public class Alimento extends Item {
 
     //Método consumir adaptado a GUI(contem exceção)
     public String consumir(Personagem personagem) {
-        if (personagem.getFome() >= 100) {
+        if (personagem.getFome() >= 6) {
             throw new FomeCheiaException(personagem.getNome() + " já está com a fome totalmente saciada.");
         }
         personagem.recuperarFome(valornutricional);

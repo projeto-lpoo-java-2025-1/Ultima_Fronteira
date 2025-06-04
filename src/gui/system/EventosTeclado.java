@@ -5,18 +5,21 @@ import java.awt.event.KeyListener;
 
 public class EventosTeclado implements KeyListener {
 
-    PainelJogo gp;
+    private PainelJogo gp;
 
     private boolean cimaPressionado, baixoPressionado, esquerdaPressionado, direitaPressionado, enterPressionado;
 
-    private boolean checarDesenhoTempo = false;
+    private boolean mostrarTextoDebug = false;
+
+
+    // Métodos de acesso
 
     public boolean isChecarDesenhoTempo() {
-        return checarDesenhoTempo;
+        return mostrarTextoDebug;
     }
 
     public void setChecarDesenhoTempo(boolean checarDesenhoTempo) {
-        this.checarDesenhoTempo = checarDesenhoTempo;
+        this.mostrarTextoDebug = checarDesenhoTempo;
     }
 
     public boolean isCimaPressionado() {
@@ -38,6 +41,27 @@ public class EventosTeclado implements KeyListener {
     public boolean isEnterPressionado() {
         return enterPressionado;
     }
+
+    public boolean isMostrarTextoDebug() {
+        return mostrarTextoDebug;
+    }
+
+    public void setCimaPressionado(boolean cimaPressionado) {
+        this.cimaPressionado = cimaPressionado;
+    }
+
+    public void setBaixoPressionado(boolean baixoPressionado) {
+        this.baixoPressionado = baixoPressionado;
+    }
+
+    public void setEsquerdaPressionado(boolean esquerdaPressionado) {
+        this.esquerdaPressionado = esquerdaPressionado;
+    }
+
+    public void setDireitaPressionado(boolean direitaPressionado) {
+        this.direitaPressionado = direitaPressionado;
+    }
+
 
     public void setEnterPressionado(boolean enterPressionado) {
         this.enterPressionado = enterPressionado;
@@ -68,136 +92,205 @@ public class EventosTeclado implements KeyListener {
             estadoPausa(code);
         } else if (gp.getEstadoJogo() == gp.getEstadoPersonagem()) {
             estadoPersonagem(code);
-        }else if(gp.getEstadoJogo()==gp.getEstadoJogoFinalizado()){
+        } else if (gp.getEstadoJogo() == gp.getEstadoJogoDescricao()) {
+            estadoJogoDescricao(code);
+        } else if (gp.getEstadoJogo() == gp.getEstadoJogoFinalizado()) {
             estadoJogoFinalizado(code);
+        } else if(gp.getEstadoJogo()==gp.getEstadoOpcoes()){
+            estadoOpcoes(code);
+        } else if(gp.getEstadoJogo()==gp.getEstadoAssarAlimento()){
+            estadoAssarAlimento(code);
+        } else if(gp.getEstadoJogo()==gp.getEstadoSistemaDeTroca()){
+            estadoSistemaDeTroca(code);
+        } else if(gp.getEstadoJogo()==gp.getEstadoJogoVencido()){
+            estadoJogoVencido(code);
+
         }
     }
 
-    public void estadoJogoFinalizado(int code){
 
-        if(code==KeyEvent.VK_W){
-            gp.getIu().setComandoNum(gp.getIu().getComandoNum()-1);
-            if(gp.getIu().getComandoNum()<0){
+    public void estadoJogoDescricao(int code) {
+
+        if (code == KeyEvent.VK_M) {
+            gp.setEstadoJogo(gp.getEstadoPlay());
+
+        }
+
+    }
+
+    public void estadoJogoVencido(int code) {
+
+        if(code == KeyEvent.VK_W) {
+            // gp.playSE(1);
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum() - 1);
+            if(gp.getIu().getComandoNum() < 0) {
                 gp.getIu().setComandoNum(1);
             }
         }
 
-        if(code==KeyEvent.VK_S){
-            gp.getIu().setComandoNum(gp.getIu().getComandoNum()+1);
-            if(gp.getIu().getComandoNum()<1){
+        if(code == KeyEvent.VK_S) {
+            // gp.playSE(1);
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum() + 1);
+            if(gp.getIu().getComandoNum() > 1) {
                 gp.getIu().setComandoNum(0);
             }
-
         }
 
-        if(code==KeyEvent.VK_ENTER){
-            if(gp.getIu().getComandoNum()==1){
+        if(code == KeyEvent.VK_ENTER) {
+            if(gp.getIu().getComandoNum() == 0) {
+                // Reinicia o jogo no estado de jogo (play)
+                gp.setEstadoJogo(gp.getEstadoPlay());
+                gp.retry(); // Você pode usar outro método se quiser comportamento diferente ao vencer
+            } else if(gp.getIu().getComandoNum() == 1) {
+                // Volta para a tela inicial
                 gp.setEstadoJogo(gp.getEstadoTitulo());
-                gp.getIu().setTelaMenu(0); // volta para o menu principal
-                gp.getIu().setComandoNum(0); // cursor no topo
+                gp.getIu().setTelaMenu(0);
+                gp.getIu().setComandoNum(0);
+                gp.restart(); // Reset geral, se necessário
             }
         }
-
     }
 
+
     public void estadoTitulo(int code) {
+        System.out.println("TelaMenu: " + gp.getIu().getTelaMenu() + ", ComandoNum: " + gp.getIu().getComandoNum() + ", code: " + code);
+        int tela = gp.getIu().getTelaMenu();
+        int comando = gp.getIu().getComandoNum();
 
-        if (gp.getIu().getTelaMenu() == 0) {
+        if (tela == 0) { // Menu principal
             if (code == KeyEvent.VK_W) {
-                gp.getIu().setComandoNum(gp.getIu().getComandoNum() - 1);
-                if (gp.getIu().getComandoNum() < 0) {
-                    gp.getIu().setComandoNum(2);
-                }
-            }
-
-            if (code == KeyEvent.VK_S) {
-                gp.getIu().setComandoNum(gp.getIu().getComandoNum() + 1);
-                if (gp.getIu().getComandoNum() > 2) {
-                    gp.getIu().setComandoNum(0);
-                }
-            }
-
-            if (code == KeyEvent.VK_ENTER) {
-                if (gp.getIu().getComandoNum() == 0) {
-
+                comando--;
+                if (comando < 0) comando = 2;
+                gp.playSE(1);
+                gp.getIu().setComandoNum(comando);
+            } else if (code == KeyEvent.VK_S) {
+                gp.playSE(1);
+                comando++;
+                if (comando > 2) comando = 0;
+                gp.getIu().setComandoNum(comando);
+            } else if (code == KeyEvent.VK_ENTER) {
+                if (comando == 0) {
+                    // IMPORTANTE: Limpar seleção anterior antes de ir para seleção
+                    gp.setPersonagemSelecionado(null);
+                    gp.getIu().setPersonagemSelecionado(null);
                     gp.getIu().setTelaMenu(1);
-                    gp.repaint();
-                }
-                if (gp.getIu().getComandoNum() == 1) {
-                }
-                if (gp.getIu().getComandoNum() == 2) {
+                    gp.getIu().setComandoNum(0); // Resetar comando
+                } else if (comando == 1) {
+                    // Implementar outra opção do menu se houver
+                } else if (comando == 2) {
                     System.exit(0);
                 }
             }
-
-
-        } else if (gp.getIu().getTelaMenu() == 1) {
+        } else if (tela == 1) { // Tela intermediária
+            if (code == KeyEvent.VK_ENTER) {
+                gp.getIu().setTelaMenu(2);
+                gp.getIu().setComandoNum(0); // Resetar para primeira opção
+            } else if (code == KeyEvent.VK_ESCAPE) {
+                gp.getIu().setTelaMenu(0);
+                gp.getIu().setComandoNum(0);
+                gp.getIu().reiniciarEfeitoDigitacao();
+            }
+        } else if (tela == 2) { // Tela seleção de personagem
             if (code == KeyEvent.VK_W) {
-                gp.getIu().setComandoNum(gp.getIu().getComandoNum() - 1);
-                if (gp.getIu().getComandoNum() < 0) {
-                    gp.getIu().setComandoNum(4);
-                }
-            }
+                gp.playSE(1);
 
-            if (code == KeyEvent.VK_S) {
-                gp.getIu().setComandoNum(gp.getIu().getComandoNum() + 1);
-                if (gp.getIu().getComandoNum() > 4) {
-                    gp.getIu().setComandoNum(0);
+                comando--;
+                if (comando < 0) comando = 4;
+                gp.getIu().setComandoNum(comando);
+            } else if (code == KeyEvent.VK_S) {
+                gp.playSE(1);
+                comando++;
+                if (comando > 4) comando = 0;
+                gp.getIu().setComandoNum(comando);
+            } else if (code == KeyEvent.VK_ENTER) {
+                switch (comando) {
+                    case 0:
+                        gp.getIu().setPersonagemSelecionado("O RASTREADOR");
+                        gp.getIu().setTelaMenu(3);
+                        break;
+                    case 1:
+                        gp.getIu().setPersonagemSelecionado("O MÉDICO");
+                        gp.getIu().setTelaMenu(3);
+                        break;
+                    case 2:
+                        gp.getIu().setPersonagemSelecionado("A MECÂNICA");
+                        gp.getIu().setTelaMenu(3);
+                        break;
+                    case 3:
+                        gp.getIu().setPersonagemSelecionado("A SOBREVIVENTE");
+                        gp.getIu().setTelaMenu(3);
+                        break;
+                    case 4:
+                        gp.getIu().setTelaMenu(0);
+                        gp.getIu().setComandoNum(0);
+                        break;
                 }
-            }
-
-            if (code == KeyEvent.VK_ENTER) {
-                if (gp.getIu().getComandoNum() == 0) {
-                    gp.getIu().setPersonagemSelecionado("O RASTREADOR"); // Note o nome correto
-                    gp.getIu().setTelaMenu(2); // Vai para tela de descrição
-                    gp.repaint();
-                }
-                if (gp.getIu().getComandoNum() == 1) {
-                    gp.getIu().setPersonagemSelecionado("O MÉDICO");
-                    gp.getIu().setTelaMenu(2);
-                    gp.repaint();
-                }
-                if (gp.getIu().getComandoNum() == 2) {
-                    gp.getIu().setPersonagemSelecionado("A MECÂNICA");
-                    gp.getIu().setTelaMenu(2);
-                    gp.repaint();
-                }
-                if (gp.getIu().getComandoNum() == 3) {
-                    gp.getIu().setPersonagemSelecionado("A SOBREVIVENTE");
-                    gp.getIu().setTelaMenu(2);
-                    gp.repaint();
-                }
-                if (gp.getIu().getComandoNum() == 4) {
-                    gp.getIu().setTelaMenu(0); // Volta para o menu principal
-                }
-
-            }
-
-        } else if (gp.getIu().getTelaMenu() == 2) {
-            if (code == KeyEvent.VK_ENTER) {
-                // Confirma a seleção do personagem e inicia o jogo
-                String personagem = "";
-                if (gp.getIu().getPersonagemSelecionado().equals("O RASTREADOR")) {
-                    personagem = "rastreador";
-                } else if (gp.getIu().getPersonagemSelecionado().equals("O MÉDICO")) {
-                    personagem = "médico";
-                } else if (gp.getIu().getPersonagemSelecionado().equals("A MECÂNICA")) {
-                    personagem = "mecânico";
-                } else if (gp.getIu().getPersonagemSelecionado().equals("A SOBREVIVENTE")) {
-                    personagem = "sobrevivente";
-                }
-                gp.setPersonagemSelecionado(personagem);
-                gp.iniciarJogo();
-                gp.setEstadoJogo(gp.getEstadoPlay());
-            }
-            if (code == KeyEvent.VK_ESCAPE) {
+            } else if (code == KeyEvent.VK_ESCAPE) {
                 gp.getIu().setTelaMenu(1);
-                gp.repaint();
+                gp.getIu().setComandoNum(0);
+            }
+        } else if (tela == 3) { // Tela de confirmação do personagem
+            if (code == KeyEvent.VK_ENTER) {
+                String personagem = gp.getIu().getPersonagemSelecionado();
+                String personagemKey = "";
+                switch (personagem) {
+                    case "O RASTREADOR":
+                        personagemKey = "rastreador";
+                        break;
+                    case "O MÉDICO":
+                        personagemKey = "medico";
+                        break;
+                    case "A MECÂNICA":
+                        personagemKey = "mecanica";
+                        break;
+                    case "A SOBREVIVENTE":
+                        personagemKey = "sobrevivente";
+                        break;
+                }
+
+                // Definir o personagem selecionado no jogo
+                gp.setPersonagemSelecionado(personagemKey);
+
+                // Agora ir para o jogo
+                gp.setEstadoJogo(gp.getEstadoPlay());
+
+                System.out.println("Personagem selecionado: " + personagemKey);
+
+            } else if (code == KeyEvent.VK_ESCAPE) {
+                gp.getIu().setTelaMenu(2);
+                gp.getIu().setComandoNum(0);
             }
         }
 
-    }
 
+        /*(code==KeyEvent.VK_W){
+
+            if(gp.getIu().getComandoNum()<0){
+                gp.getIu().setComandoNum(2);
+            }
+        } if (code == KeyEvent.VK_S) {
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum()-1);
+            if (gp.getIu().getComandoNum() > 2){
+                gp.getIu().setComandoNum(0);
+            }
+        } if(code==KeyEvent.VK_ENTER) {
+            if (gp.getIu().getComandoNum() == 0) {
+                gp.setEstadoJogo(gp.getEstadoPlay());
+
+            }
+            if (gp.getIu().getComandoNum() == 1) {
+
+            }
+            if (gp.getIu().getComandoNum() == 2) {
+                System.exit(0);
+            }
+        }
+
+
+
+         */
+
+    }
 
 
     public void estadoPlay(int code) {
@@ -224,6 +317,15 @@ public class EventosTeclado implements KeyListener {
                 gp.setEstadoJogo(gp.getEstadoPlay());
             }
         }
+        if (code == KeyEvent.VK_M) {
+            if (gp.getEstadoJogo() == gp.getEstadoPlay()) {
+                gp.setEstadoJogo(gp.getEstadoJogoDescricao());
+
+            } else if (gp.getEstadoJogo() == gp.getEstadoJogoDescricao()) {
+                gp.setEstadoJogo(gp.getEstadoPlay());
+            }
+
+        }
         if (code == KeyEvent.VK_C) {
             gp.setEstadoJogo(gp.getEstadoPersonagem());
         }
@@ -232,8 +334,101 @@ public class EventosTeclado implements KeyListener {
             enterPressionado = true;
         }
 
+        if(code==KeyEvent.VK_ESCAPE){
+            gp.setEstadoJogo(gp.getEstadoOpcoes());
+        }
+
+        if (code == KeyEvent.VK_T) {
+            if (mostrarTextoDebug == false) {
+                mostrarTextoDebug = true;
+            } else if (isChecarDesenhoTempo()) {
+                setChecarDesenhoTempo(false);
+            }
+        }
+
+
+        if(code==KeyEvent.VK_R){
+            switch(gp.getMapaAtual()){
+                case 0:gp.getBlocosG().carregarMapa("/maps/forest.txt",0); break;
+                case 1:gp.getBlocosG().carregarMapa("/maps/lagoErio.txt",1); break;
+                case 2:gp.getBlocosG().carregarMapa("/maps/ruinas.txt",2); break;
+                case 3:gp.getBlocosG().carregarMapa("/maps/montanha.txt",3); break;
+                case 4:gp.getBlocosG().carregarMapa("/maps/caverna.txt",4); break;
+            }
+
+        }
+
+
+
 
     }
+    public void estadoSistemaDeTroca(int code) {
+
+        if (code == KeyEvent.VK_ENTER) {
+            setEnterPressionado(true);
+        }
+
+        if (gp.getIu().subEstado == 0) {
+            if (code == KeyEvent.VK_W) {
+                gp.getIu().setComandoNum(gp.getIu().getComandoNum() - 1);
+                if (gp.getIu().getComandoNum() < 0) {
+                    gp.getIu().setComandoNum(2);
+                }
+            }
+
+            if (code == KeyEvent.VK_S) {
+                gp.getIu().setComandoNum(gp.getIu().getComandoNum() + 1);
+                if (gp.getIu().getComandoNum() > 2) {
+                    gp.getIu().setComandoNum(0);
+                }
+            }
+        }
+
+        // Mover este bloco para fora do if acima
+        if (gp.getIu().subEstado == 1) {
+            inventarioNpc(code);
+
+            if (code == KeyEvent.VK_ESCAPE) {
+                gp.getIu().subEstado = 0;
+            }
+        }
+    }
+
+    public void estadoJogoFinalizado(int code){
+
+        if(code==KeyEvent.VK_W){
+            //gp.playSE(1);
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum()-1);
+            if(gp.getIu().getComandoNum()<0){
+                gp.getIu().setComandoNum(1);
+            }
+        }
+
+        if(code==KeyEvent.VK_S){
+            //gp.playSE(1);
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum()+1);
+            if(gp.getIu().getComandoNum()>1){
+                gp.getIu().setComandoNum(0);
+            }
+
+        }
+
+        if(code==KeyEvent.VK_ENTER){
+            if(gp.getIu().getComandoNum()==0){
+                gp.setEstadoJogo(gp.getEstadoPlay());
+                gp.retry();
+            } else if(gp.getIu().getComandoNum()==1){
+
+                gp.setEstadoJogo(gp.getEstadoTitulo());
+                gp.getIu().setTelaMenu(0);
+                gp.getIu().setComandoNum(0);
+                gp.restart();
+            }
+
+        }
+
+    }
+
 
     public void estadoPausa(int code) {
 
@@ -261,38 +456,138 @@ public class EventosTeclado implements KeyListener {
             gp.setEstadoJogo(gp.getEstadoPlay());
         }
 
-        if (code == KeyEvent.VK_W) {
+        if(code==KeyEvent.VK_ENTER){
+            gp.jogador.selecaoItem();
+        }
 
-            if (gp.getIu().getSlotLinha() != 0) {
-                gp.getIu().setSlotLinha(gp.getIu().getSlotLinha() - 1); // Cima
+        inventarioJogador(code);
+    }
+
+    public void inventarioJogador(int code) {
+        if (code == KeyEvent.VK_W) {
+            //gp.playSE(1);
+
+            if (gp.getIu().getJogadorSlotLinha() != 0) {
+                gp.getIu().setJogadorSlotLinha(gp.getIu().getJogadorSlotLinha() - 1); // Cima
             }
         }
 
         if (code == KeyEvent.VK_S) {
-            if (gp.getIu().getSlotLinha() != 3) {
-                gp.getIu().setSlotLinha(gp.getIu().getSlotLinha() + 1); // Baixo
+            //gp.playSE(1);
+
+            if (gp.getIu().getJogadorSlotLinha() != 3) {
+                gp.getIu().setJogadorSlotLinha(gp.getIu().getJogadorSlotLinha() + 1); // Baixo
             }
         }
 
         if (code == KeyEvent.VK_A) {
-            if (gp.getIu().getSlotCol() != 0) {
-                gp.getIu().setSlotCol(gp.getIu().getSlotCol() - 1); // Esquerda
+            //gp.playSE(1);
+
+            if (gp.getIu().getJogadorSlotCol() != 0) {
+                gp.getIu().setJogadorSlotCol(gp.getIu().getJogadorSlotCol() - 1); // Esquerda
             }
         }
 
         if (code == KeyEvent.VK_D) {
-            if (gp.getIu().getSlotCol() != 4) {
-                gp.getIu().setSlotCol(gp.getIu().getSlotCol() + 1); // Direita
+            //gp.playSE(1);
+
+            if (gp.getIu().getJogadorSlotCol() != 4) {
+                gp.getIu().setJogadorSlotCol(gp.getIu().getJogadorSlotCol() + 1); // Direita
             }
         }
     }
 
-    public void estadoCombate(int code) {
 
+    public void inventarioNpc(int code) {
+        if (code == KeyEvent.VK_W) {
+            //gp.playSE(1);
 
+            if (gp.getIu().getNpcSlotLinha() != 0) {
+                gp.getIu().setNpcSlotLinha(gp.getIu().getNpcSlotLinha() - 1); // Cima
+            }
+        }
 
+        if (code == KeyEvent.VK_S) {
+            //gp.playSE(1);
+
+            if (gp.getIu().getNpcSlotLinha() != 3) {
+                gp.getIu().setNpcSlotLinha(gp.getIu().getNpcSlotLinha() + 1); // Baixo
+            }
+        }
+
+        if (code == KeyEvent.VK_A) {
+            //gp.playSE(1);
+
+            if (gp.getIu().getNpcSlotCol() != 0) {
+                gp.getIu().setNpcSlotCol(gp.getIu().getNpcSlotCol() - 1); // Esquerda
+            }
+        }
+
+        if (code == KeyEvent.VK_D) {
+            //gp.playSE(1);
+
+            if (gp.getIu().getNpcSlotCol() != 4) {
+                gp.getIu().setNpcSlotCol(gp.getIu().getNpcSlotCol() + 1); // Direita
+            }
+        }
     }
 
+
+
+    public void estadoOpcoes(int code){
+        if(code==KeyEvent.VK_ESCAPE){
+            gp.setEstadoJogo(gp.getEstadoPlay());
+        }
+        if(code==KeyEvent.VK_ENTER){
+            setEnterPressionado(true);
+        }
+
+        int numMaxComando=0;
+        switch(gp.getIu().subEstado){
+            case 0: numMaxComando=5; break;
+            case 3: numMaxComando=1; break;
+
+        }
+
+        if(code==KeyEvent.VK_W){
+            gp.playSE(1);
+
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum()-1);
+            if(gp.getIu().getComandoNum()<0){
+                gp.getIu().setComandoNum(numMaxComando);
+            }
+        } if(code==KeyEvent.VK_S){
+            gp.playSE(1);
+
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum()+1);
+            if(gp.getIu().getComandoNum()>numMaxComando){
+                gp.getIu().setComandoNum(0);
+            }
+        }
+    }
+
+    public void estadoAssarAlimento(int code) {
+
+        if (code == KeyEvent.VK_ENTER) {
+            setEnterPressionado(true);
+        }
+
+        int numMaxComando = 1; // porque temos 2 opções: 0 ("Sim") e 1 ("Não")
+
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            gp.playSE(1);
+
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum()-1);
+            if (gp.getIu().getComandoNum() < 0) gp.getIu().setComandoNum(numMaxComando);
+        }
+
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {
+            gp.playSE(1);
+
+            gp.getIu().setComandoNum(gp.getIu().getComandoNum()+1);
+            if (gp.getIu().getComandoNum() > numMaxComando) gp.getIu().setComandoNum(0);
+        }
+    }
 
 
 
@@ -302,6 +597,7 @@ public class EventosTeclado implements KeyListener {
         int code=e.getKeyCode();
 
         if(code==KeyEvent.VK_W) {
+
             cimaPressionado=false;
         }
         if(code==KeyEvent.VK_S) {

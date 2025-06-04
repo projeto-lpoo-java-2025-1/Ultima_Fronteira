@@ -1,59 +1,55 @@
 package gui.entidades;
 
-import gui.objetos.ALIMENTO_Enlatado;
-import gui.objetos.REMEDIO_Analgesico;
-import gui.objetos.REMEDIO_Antibiotico;
-import gui.objetos.REMEDIO_Bandagem;
+import gui.itens.*;
 import gui.system.CriadorAtivos;
 import gui.system.EventosTeclado;
-import gui.system.InterfaceUsuario;
 import gui.system.PainelJogo;
-import personagens.Mecanico;
+import gui.tile_interativo.BlocoInterativo;
+import personagens.Inventario;
 import personagens.Personagem;
-import personagens.Rastreador;
-import personagens.SobreviventeNato;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+
+
 public class Jogador extends Entidade {
 
-    PainelJogo gp; //gp é uma referência para o painel de jogo onde o jogador será desenhado e onde o jogo será atualizado.
-    EventosTeclado eventosTeclado; //keyH é uma referência para o manipulador de teclas, que controla as teclas pressionadas para movimentação.
+    private PainelJogo gp; //gp é uma referência para o painel de jogo onde o jogador será desenhado e onde o jogo será atualizado.
+    private EventosTeclado eventosTeclado; //keyH é uma referência para o manipulador de teclas, que controla as teclas pressionadas para movimentação.
 
+    // Tela
     private final int telaX;
     private final int telaY;
-    private int temRemedio=0;
-    private Personagem personagem;
 
-
-    public final int getTelaX(){
-        return telaX;
-    }
-    public final int getTelaY(){
-        return telaY;
-    }
-    public int getTemRemedio(){
-        return temRemedio;
-    }
-
+    // Condições de doença
     private boolean desidratado = false;
-    private boolean infectado=false;
+    private boolean infectado = false;
 
-
-    private ArrayList<Entidade> inventario=new ArrayList<>();
-    private final int tamanhoMaxInventario=20;
 
     // Inventário
-    public final int getTamanhoMaxInventario(){
+    private ArrayList<Entidade> inventario = new ArrayList<>();
+    private final int tamanhoMaxInventario = 20;
+
+    private Personagem personagemLogico;
+
+    private boolean ataqueCancelado;
+
+    // Contador
+    private int counter2 = 0;
+
+    private CriadorAtivos criadorDeAtivos;
+
+    // Métodos de acesso
+
+    public final int getTamanhoMaxInventario() {
         return tamanhoMaxInventario;
     }
 
-    public ArrayList<Entidade> getInventario(){
+    public ArrayList<Entidade> getInventario() {
         return inventario;
     }
-
 
     public boolean isDesidratado() {
         return desidratado;
@@ -63,39 +59,49 @@ public class Jogador extends Entidade {
         this.desidratado = desidratado;
     }
 
-
     public boolean isInfectado() {
         return infectado;
     }
 
-    public void setInfectado(boolean infectado){
-        this.infectado=infectado;
+    public void setInfectado(boolean infectado) {
+        this.infectado = infectado;
     }
 
-    private int counter2=0;
+    public final int getTelaX() {
+        return telaX;
+    }
 
-    CriadorAtivos criadorDeAtivos;
+    public final int getTelaY() {
+        return telaY;
+    }
 
-    Personagem personagemLogico;
+    public boolean isAtaqueCancelado() {
+        return ataqueCancelado;
+    }
+
+    public void setAtaqueCancelado(boolean ataqueCancelado) {
+        this.ataqueCancelado = ataqueCancelado;
+    }
 
     public Jogador(PainelJogo gp, EventosTeclado eventosTeclado) { //Construtor da classe que recebe o painel de jogo e manipulador de teclas
 
         super(gp);
 
         this.gp = gp;
+        setTipo(getTipo_jogador());
         this.eventosTeclado = eventosTeclado;
 
-
-
-        telaX=gp.getTelaLargura()/2 - (gp.getTamanhoBloco()/2);
-        telaY=gp.getTelaAltura()/2 - (gp.getTamanhoBloco()/2);
+        telaX = gp.getTelaLargura() / 2 - (gp.getTamanhoBloco() / 2);
+        telaY = gp.getTelaAltura() / 2 - (gp.getTamanhoBloco() / 2);
 
         setAreaSolida(new Rectangle(8, 16, 32, 32));
         setAreaSolidaPadraoX(getAreaSolida().x);
         setAreaSolidaPadraoY(getAreaSolida().y);
 
-        setValoresPadrao(); //Chama o método que vai configurar valores padrão para o jogador
-        getImagemJogador(); //Aqui garantimos que as imagens do jogador sejam carregadas
+        areaAtaque.width=48;
+        areaAtaque.height=48;
+
+        setValoresPadrao();
 
         definirItens();
     }
@@ -103,10 +109,12 @@ public class Jogador extends Entidade {
     public void setValoresPadrao() {
         // Define valores iniciais para a posição do jogador, velocidade e direção
 
-        setMundoX(gp.getTamanhoBloco() * 26);
-        setMundoY(gp.getTamanhoBloco() * 9);
-        setVelocidade(2);
+        setMundoX(gp.getTamanhoBloco() * 21);
+        setMundoY(gp.getTamanhoBloco() * 10);
+
+        setVelocidade(4);
         setDirecao("down");
+        setAtaqueCancelado(false);
 
         // Status do jogador
 
@@ -127,233 +135,564 @@ public class Jogador extends Entidade {
 
 
 
+        /*setVida(personagemLogico.getVida());
+        setSede(personagemLogico.getSede());
+        setFome(personagemLogico.getFome());
+        setSanidade(personagemLogico.getSanidade());
+        setEnergia(personagemLogico.getEnergia());
+
+        setVidaMaxima(6);
+        setSedeMaxima(8);
+        setFomeMaxima(8);
+        setSanidadeMaxima(6);
+        setEnergiaMaxima(6);
+
+         */
+
+        if(gp.jogador!=null){
+
+        }
+
+        setArmaAtual(null);
+
     }
-    public void definirItens(){
 
 
+    public void posicoesPadrao(){
+        setMundoX(gp.getTamanhoBloco() * 21);
+        setMundoY(gp.getTamanhoBloco() * 10);
+        setDirecao("down");
 
     }
 
+    public void restaurarVida(){
+
+        setVida(getVidaMaxima());
+        setInvisibilidade(false);
+    }
+
+    public void definirItens() {
+
+        //inventario.clear();
+        //gp.jogador.inventario.add(new Material(gp, "ouro"));
+    }
+
+    public void definirImagemJogador() {
+    }
+
+    public void definirImagemAtaque() {
+    }
 
 
-    public void getImagemJogador(){}
+    public void update() {
 
-    public void update() { //Este método atualiza a posição e a animação do jogador com base nas teclas pressionadas
+        if (eventosTeclado.isEnterPressionado()) {
+            int npcIndice = gp.getcColisoes().checarEntidade(this, gp.getNpc());
 
-        if (eventosTeclado.isCimaPressionado() == true || eventosTeclado.isBaixoPressionado() == true || eventosTeclado.isEsquerdaPressionado() == true || eventosTeclado.isDireitaPressionado() == true) {
-
-            if (eventosTeclado.isCimaPressionado()) {
-                setDirecao("up");
-            } else if (eventosTeclado.isBaixoPressionado()) {
-                setDirecao("down");
-            } else if (eventosTeclado.isEsquerdaPressionado()) {
-                setDirecao("left");
-            } else if (eventosTeclado.isDireitaPressionado()) {
-                setDirecao("right");
-            }
-
-            setColisaoOn(false);
-
-            gp.getcColisoes().checarBloco(this);
-
-            // Checar colisao objeto
-            int objIndice=gp.getcColisoes().checarObjeto(this, true);
-            pegarObjeto(objIndice);
-
-
-            // Checar colisao NPC
-            int npcIndice=gp.getcColisoes().checarEntidade(this, gp.getNpc());
-            interagirNPC(npcIndice);
-
-            //Checar colisao criatura
-            int criaturaIndice=gp.getcColisoes().checarEntidade(this, gp.getCriatura());
-            contatoCriatura(criaturaIndice);
-
-
-            // Checar evento
-            gp.getManipuladorDeEventos().checarEvento();
-
-
-
-            if (!isColisaoOn()) {
-
-                switch (getDirecao()) {
-                    case "up":
-                        if (getMundoY() - getVelocidade() >= 0) { //Verifica se não vai além do topo
-                            setMundoY(getMundoY() - getVelocidade());
-                        }
-                        break;
-                    case "down":
-                        if (getMundoY() + getVelocidade() <= gp.getMundoAltura() - gp.getTamanhoBloco()) { //Verifica se não vai além do fundo
-                            setMundoY(getMundoY() + getVelocidade());
-                        }
-                        break;
-                    case "left":
-                        if (getMundoX() - getVelocidade() >= 0) { //Verifica se não vai além da esquerda
-                            setMundoX(getMundoX() - getVelocidade());
-                        }
-                        break;
-                    case "right":
-                        if (getMundoX() + getVelocidade() <= gp.getMundoLargura() - gp.getTamanhoBloco()) { //Verifica se não vai além da direita
-                            setMundoX(getMundoX() + getVelocidade());
-                        }
-                        break;
-                }
-
-                setContadorSprite(getContadorSprite() + 1); //Conta quantas vezes o jogador se move e, quando atinge 20, troca a animação
-                if (getContadorSprite() > 20) {
-                    if (getNumSprite() == 1) {
-                        setNumSprite(2);
-                    } else if (getNumSprite() == 2) {
-                        setNumSprite(1);
-                    }
+            if (npcIndice != 999) {
+                interagirNPC(npcIndice);
+                eventosTeclado.setEnterPressionado(false);
+            } else if (!isAtaque()) {
+                if (getArmaAtual() != null) {
+                    setAtaque(true);
                     setContadorSprite(0);
+                    setAtaqueCancelado(false);
+                } else {
+                    setAtaqueCancelado(true);
+                    gp.getIu().mostrarMensagem("Você precisa equipar uma arma para atacar!");
                 }
+                eventosTeclado.setEnterPressionado(false);
             }
 
         }
 
-        if (isInvisibilidade()){
+        if (isAtaque()) {
+            ataque();
+        } else {
+            // Verifica movimentação apenas se alguma tecla de direção estiver pressionada
+            if (eventosTeclado.isCimaPressionado() || eventosTeclado.isBaixoPressionado() ||
+                    eventosTeclado.isEsquerdaPressionado() || eventosTeclado.isDireitaPressionado()) {
 
-            setContadorInvisibilidade(getContadorInvisibilidade()+1);
 
-            if(getContadorInvisibilidade()>60){
+                // Atualiza a direção com base na tecla pressionada
+                if (eventosTeclado.isCimaPressionado()) {
+                    setDirecao("up");
+                } else if (eventosTeclado.isBaixoPressionado()) {
+                    setDirecao("down");
+                } else if (eventosTeclado.isEsquerdaPressionado()) {
+                    setDirecao("left");
+                } else if (eventosTeclado.isDireitaPressionado()) {
+                    setDirecao("right");
+                }
+
+                setColisaoOn(false);
+
+                gp.getcColisoes().checarBloco(this);
+
+                int objIndice = gp.getcColisoes().checarObjeto(this, true);
+                pegarObjeto(objIndice);
+
+                int npcIndice = gp.getcColisoes().checarEntidade(this, gp.getNpc());
+                interagirNPC(npcIndice);
+
+                int criaturaIndice = gp.getcColisoes().checarEntidade(this, gp.getCriatura());
+                contatoCriatura(criaturaIndice);
+
+                int presaIndice = gp.getcColisoes().checarEntidade(this, gp.getPresa());
+                cacar(presaIndice);
+
+                int blocoIndice=gp.getcColisoes().checarEntidade(this, gp.getBloco());
+                interativo(blocoIndice);
+
+                int craftIndice=gp.getcColisoes().checarEntidade(this, gp.getCraft());
+                craftar(craftIndice);
+
+
+                gp.getManipuladorDeEventos().checarEvento();
+
+                if (!isColisaoOn() && eventosTeclado.isEnterPressionado() == false) {
+                    switch (getDirecao()) {
+                        case "up":
+                            if (getMundoY() - getVelocidade() >= 0) {
+                                setMundoY(getMundoY() - getVelocidade());
+                            }
+                            break;
+                        case "down":
+                            if (getMundoY() + getVelocidade() <= gp.getMundoAltura() - gp.getTamanhoBloco()) {
+                                setMundoY(getMundoY() + getVelocidade());
+                            }
+                            break;
+                        case "left":
+                            if (getMundoX() - getVelocidade() >= 0) {
+                                setMundoX(getMundoX() - getVelocidade());
+                            }
+                            break;
+                        case "right":
+                            if (getMundoX() + getVelocidade() <= gp.getMundoLargura() - gp.getTamanhoBloco()) {
+                                setMundoX(getMundoX() + getVelocidade());
+                            }
+                            break;
+                    }
+
+                    gp.getEventosTeclado().setEnterPressionado(false);
+                    // Atualiza animação de movimento
+                    setContadorSprite(getContadorSprite() + 1);
+                    if (getContadorSprite() > 12) {
+                        setNumSprite(getNumSprite() == 1 ? 2 : 1);
+                        setContadorSprite(0);
+                    }
+                }
+            }
+        }
+
+        // Controle de invisibilidade
+        if (isInvisibilidade()) {
+            setContadorInvisibilidade(getContadorInvisibilidade() + 1);
+            if (getContadorInvisibilidade() > 60) {
                 setInvisibilidade(false);
                 setContadorInvisibilidade(0);
             }
-
+        } else {
+            setContadorInvisibilidade(0);
         }
-        if(getVida()<=0){
+
+        // Finaliza o jogo se vida ou sanidade acabarem
+        if (getVida() <= 0 || getSanidade() <= 0) {
             gp.setEstadoJogo(gp.getEstadoJogoFinalizado());
         }
 
-
     }
 
+    public void craftar(int i){
 
-
-    public void pegarObjeto(int i){
-
-        if(i !=999){
-
-            String texto;
-
-            if(inventario.size()!=tamanhoMaxInventario){
-
-                inventario.add(gp.getObj()[i]);
-                texto="Pegou "+gp.getObj()[i].getNome()+"!";
-
-
-            }
-            else {
-                texto="Você antingiu o limite máximo no inventário!";
-            }
-            gp.getIu().mostrarMensagem(texto);
-            gp.getObj()[i]=null;
+        if (i != 999) {
         }
 
-    }
-
-
-    public void interagirNPC(int i){
-        if(i!=999){
-
-            if (gp.getEventosTeclado().isEnterPressionado()) {
-                gp.setEstadoJogo(gp.getEstadoDialogo());
-                gp.getNpc()[i].falar();
-            }
-        }
-        gp.getEventosTeclado().setEnterPressionado(false);
-    }
-
-
-    public void contatoCriatura(int i){
-        if(i!=999){
-
-            if(isInvisibilidade()==false){
-                setVida(getVida()-1);
-                setInvisibilidade(true);
-
-            }
 
         }
 
-    }
+    public void ataque() {
+        setContadorSprite(getContadorSprite() + 1);
+
+        if (getContadorSprite() <= 5) {
+            setNumSprite(1);
+        }
+        if (getContadorSprite() > 5 && getContadorSprite() <= 25) {
+            setNumSprite(2);
+
+            // Se não há arma equipada, ainda pode atacar mas com menos dano/alcance
+            if (getArmaAtual() == null) {
+                // Ataque sem arma - pode ter menor área de ataque
+                areaAtaque.width = 32;  // Menor que com arma
+                areaAtaque.height = 32;
+            } else {
+                // Usar área de ataque da arma equipada
+                areaAtaque.width = 48;
+                areaAtaque.height = 48;
+            }
 
 
+            // Salva as coordenadas e área original do personagem
+            int mundoXatual = getMundoX();
+            int mundoYatual = getMundoY();
+            int areaSolidaLargura = getAreaSolida().width;
+            int areaSolidaAltura = getAreaSolida().height;
 
-    public void desenhar(Graphics2D g2){ //Este método desenha o jogador na tela
-        BufferedImage imagem = null;
-
-            switch (getDirecao()) { //Verifica a direção atual e escolhe a imagem correspondente
+            // Ajusta a posição do personagem baseado na direção do ataque
+            switch (getDirecao()) {
                 case "up":
-                    if (getNumSprite() == 1) {
-                        imagem = getUp1();
-                    }
-                    if (getNumSprite() == 2) {
-                        imagem = getUp2();
-                    }
+                    setMundoY(getMundoY() - areaAtaque.height);
                     break;
                 case "down":
-                    if (getNumSprite() == 1) {
-                        imagem = getDown1();
-                    }
-                    if (getNumSprite() == 2) {
-                        imagem = getDown2();
-                    }
+                    setMundoY(getMundoY() + areaSolidaAltura);
                     break;
                 case "left":
-                    if (getNumSprite() == 1) {
-                        imagem = getLeft1();
-                    }
-                    if (getNumSprite() == 2) {
-                        imagem = getLeft2();
-                    }
+                    setMundoX(getMundoX() - areaAtaque.width);
                     break;
                 case "right":
-                    if (getNumSprite() == 1) {
-                        imagem = getRight1();
-                    }
-                    if (getNumSprite() == 2) {
-                        imagem = getRight2();
-                    }
+                    setMundoX(getMundoX() + areaSolidaLargura);
                     break;
             }
 
-            int x = telaX;
-            int y = telaY;
+            // Define a área sólida como a área de ataque
+            getAreaSolida().width = areaAtaque.width;
+            getAreaSolida().height = areaAtaque.height;
 
-            if (telaX > getMundoX()) {
-                x = getMundoX();
+            // Verifica colisão com criaturas usando a nova área
+            int indiceCriatura = gp.getcColisoes().checarEntidade(this, gp.getCriatura());
+            danoCriatura(indiceCriatura);
+
+            int presaIndice = gp.getcColisoes().checarEntidade(this, gp.getPresa());
+            cacar(presaIndice);
+
+            int blocoInterativo=gp.getcColisoes().checarEntidade(this, gp.getBloco());
+            interativo(blocoInterativo);
+
+            // Restaura as coordenadas e área original do personagem
+            setMundoX(mundoXatual);
+            setMundoY(mundoYatual);
+            getAreaSolida().width = areaSolidaLargura;
+            getAreaSolida().height = areaSolidaAltura;
+        }
+
+        if (getContadorSprite() > 25) {
+            setNumSprite(1);
+            setContadorSprite(0);
+            setAtaque(false);
+        }
+    }
+    public void pegarObjeto(int i) {
+        if (i != 999) {
+            if (gp.getObj()[gp.getMapaAtual()][i].getTipo() == getTipo_dropavel()) {
+                gp.getObj()[gp.getMapaAtual()][i].coletar(this);
+                gp.getObj()[gp.getMapaAtual()][i] = null;
+            } else {
+                String texto;
+                if (inventario.size() != tamanhoMaxInventario) {
+                    inventario.add(gp.getObj()[gp.getMapaAtual()][i]);
+                    texto = "Pegou " + gp.getObj()[gp.getMapaAtual()][i].getNome() + "!";
+                    gp.getObj()[gp.getMapaAtual()][i] = null; // Remove apenas uma vez
+                } else {
+                    texto = "Você atingiu o limite máximo no inventário!";
+                    // NÃO remove o objeto se o inventário estiver cheio
+                }
+                gp.getIu().mostrarMensagem(texto);
             }
-            if (telaY > getMundoY()) {
-                y = getMundoY();
+        }
+    }
+
+
+    public void interagirNPC(int i) {
+        if (gp.getEventosTeclado().isEnterPressionado()) {
+            if (i != 999) {
+                gp.setEstadoJogo(gp.getEstadoDialogo());
+                gp.getNpc()[gp.getMapaAtual()][i].falar();
+            } else {
+                setAtaque(true);
             }
-            int rightOffset = gp.getTelaLargura() - telaX;
-            if (rightOffset > gp.getMundoLargura() - getMundoX()) {
-                x = gp.getTelaLargura() - (gp.getMundoLargura() - getMundoX());
-            }
-            int bottomOffset = gp.getTelaAltura() - telaY;
-            if (bottomOffset > gp.getMundoAltura() - getMundoY()) {
-                y = gp.getTelaAltura() - (gp.getMundoAltura() - getMundoY());
-            }
+        }
+    }
 
-            if(isInvisibilidade()==true){
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-
-
+   /* public void assarAlimento(int i){
+        if (gp.getEventosTeclado().isEnterPressionado()) {
+            if (i != 999 && itemAtual.getTipo() == getTipo_dropavelConsumivel()) {
+                System.out.println("Contato com criatura de índice " + i);
             }
 
-            g2.drawImage(imagem, x, y, gp.getTamanhoBloco(), gp.getTamanhoBloco(), null); //O jogador é desenhado na posição (x, y) com o tamanho da célula (tileSize), que está definido no GamePanel.
+        }
+    }
 
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+    */
+    public void contatoCriatura(int i) {
+        if (i != 999 && !isInvisibilidade() && !isAtaque()) {
+            System.out.println("Contato com criatura de índice " + i);
+            setVida(getVida() - 1);
+            setInvisibilidade(true);
+        }
+    }
+    public void cacar(int i) {
+        // Só pode caçar se está atacando E tem arma equipada
+        if (isAtaque() && getArmaAtual() != null) {
+            if (i != 999) {
+                Entidade presa = gp.getPresa()[gp.getMapaAtual()][i];
 
-        // g2.setFont(new Font("Arial", Font.PLAIN, 26));
-        // g2.setColor(Color.white);
-        // g2.drawString("Invisibilidade:"+getContadorInvisibilidade(), 10, 400);
+                if (!presa.isInvisibilidade()) {
+                    presa.setVida(presa.getVida() - 1);
+                    reduzirDurabilidadeArma();
+
+                    presa.setInvisibilidade(true);
+
+                    if (presa.getVida() <= 0) {
+                        gp.getPresa()[gp.getMapaAtual()][i].setMorto(true);
+
+                        String personagem = gp.getPersonagemSelecionado();
+
+                        if ("sobrevivente".equals(personagem)) {
+                            setEnergia(getEnergia());
+                        } else {
+                            setEnergia(getEnergia() - 1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void danoCriatura(int i) {
+        // Só pode causar dano se tem arma equipada
+        if (i != 999 && getArmaAtual() != null) {
+            Entidade criatura = gp.getCriatura()[gp.getMapaAtual()][i];
+
+            if (!criatura.isInvisibilidade()) {
+                criatura.setVida(criatura.getVida() - 1);
+                reduzirDurabilidadeArma();
+                criatura.setInvisibilidade(true);
+
+                if (criatura.getVida() <= 0) {
+                    gp.getCriatura()[gp.getMapaAtual()][i].setMorto(true);
+                    String personagem = gp.getPersonagemSelecionado();
+
+                    if ("sobrevivente".equals(personagem)) {
+                        gp.jogador.setEnergia(getEnergia() - 1);
+                    } else {
+                        gp.jogador.setEnergia(getEnergia() - 2);
+                    }
+                }
+            }
+        }
+    }
+
+    public void setInventario(ArrayList<Entidade> inventario) {
+        this.inventario = inventario;
+    }
+
+    public void selecaoItem() {
+        int itemIndice = gp.getIu().pegarItemSlot(gp.getIu().getJogadorSlotCol(), gp.getIu().getJogadorSlotLinha());
+
+        if (itemIndice < inventario.size()) {
+            Entidade itemSelecionado = inventario.get(itemIndice);
+
+            if (itemSelecionado.getTipo() == getTipo_espada() || itemSelecionado.getTipo() == getTipo_machado() || itemSelecionado.getTipo() == getTipo_picareta()) {
+                setArmaAtual(itemSelecionado);
+
+                definirImagemAtaque();
+            }
 
 
+            if (itemSelecionado.getTipo() == getTipo_consumivel()) {
+                if (gp.jogador.getFome() < gp.jogador.getFomeMaxima()) {
+                    itemSelecionado.usar(this);
+                    inventario.remove(itemIndice);
+                } else {
+                    gp.setEstadoJogo(gp.getEstadoDialogo());
+                    gp.getIu().setDialogoAtual("Você já está satisfeito.\nNão pode comer mais agora.");
+                }
+            }
+
+            if (itemSelecionado.getTipo() == getTipo_dropavelConsumivel()) {
+
+                gp.setEstadoJogo(gp.getEstadoAssarAlimento());
+
+            }
+
+            if (itemSelecionado.getTipo() == getTipo_vencido()) {
+                if (gp.jogador.getFome() < gp.jogador.getFomeMaxima()) {
+                    itemSelecionado.consumirAlimentoVencido(this);
+                    inventario.remove(itemIndice);
+                } else {
+                    gp.setEstadoJogo(gp.getEstadoDialogo());
+                    gp.getIu().setDialogoAtual("Você já está satisfeito.\nNão pode comer mais agora.");
+                }
+
+            }
+
+            if (itemSelecionado.getTipo() == getTipo_remedio()) {
+                if (gp.jogador.getVida() < gp.jogador.getVidaMaxima() || gp.jogador.getSanidade() < gp.jogador.getSanidadeMaxima() || gp.jogador.getEnergia() < gp.jogador.getEnergiaMaxima()) {
+                    itemSelecionado.usar(this);
+                    inventario.remove(itemIndice);
+
+                }
+                else {
+                    gp.setEstadoJogo(gp.getEstadoDialogo());
+                    gp.getIu().setDialogoAtual("Você já está satisfeito.\nNão pode comer mais agora.");
+                }
+
+
+            }
+        }
 
     }
-}
+    public void interativo(int i) {
+        if (i != 999 &&
+                gp.getBloco()[gp.getMapaAtual()][i].isDestrutivel() &&
+                gp.getBloco()[gp.getMapaAtual()][i].itemCorreto(this) && // 'this' é o jogador
+                !gp.getBloco()[gp.getMapaAtual()][i].isInvisibilidade()) {
 
+            // Reduzir a vida DO BLOCO, não do jogador
+            BlocoInterativo bloco = gp.getBloco()[gp.getMapaAtual()][i];
+            bloco.setVida(bloco.getVida() - 1); // Corrigido: usa a vida do bloco
+            reduzirDurabilidadeArma();
+            bloco.setInvisibilidade(true);
+
+
+            if (bloco.getVida() <= 0) {
+                // Checa se há drop antes de remover
+                bloco.checarDrop();
+                gp.getBloco()[gp.getMapaAtual()][i] = null;
+
+            }
+        } else {
+            // Debug para entender por que não está funcionando
+            if (i != 999) {
+                BlocoInterativo bloco = gp.getBloco()[gp.getMapaAtual()][i];
+                System.out.println("Falha no ataque:");
+                System.out.println("- Destrutível: " + bloco.isDestrutivel());
+                System.out.println("- Item correto: " + bloco.itemCorreto(this));
+                System.out.println("- Invisível: " + bloco.isInvisibilidade());
+            }
+        }
+
+    }
+
+
+
+    public void reduzirDurabilidadeArma() {
+        if (getArmaAtual() != null) {
+            int durabilidadeAtual = getArmaAtual().getDurabilidade();
+            getArmaAtual().setDurabilidade(durabilidadeAtual - 10);
+
+            System.out.println("Durabilidade da arma: " + getArmaAtual().getDurabilidade());
+
+            // Se a durabilidade chegou a 0 ou menos, quebra a arma
+            if (getArmaAtual().getDurabilidade() <= 0) {
+                gp.getIu().mostrarMensagem("Sua " + getArmaAtual().getNome() + " quebrou!");
+
+                // Remove a arma do inventário
+                removerArmaQuebrada();
+
+                // Remove a referência da arma atual
+                setArmaAtual(null);
+
+                System.out.println("Arma quebrada e removida do inventário!");
+            }
+        }
+    }
+
+
+
+    public void removerArmaQuebrada() {
+        if (getArmaAtual() != null) {
+            Entidade armaQuebrada = getArmaAtual();
+
+            inventario.removeIf(item ->
+                    item == armaQuebrada ||
+                            (item.getNome().equals(armaQuebrada.getNome()) &&
+                                    item.getDurabilidade() <= 0)
+            );
+
+            System.out.println("Arma quebrada removida do inventário");
+        }
+    }
+
+
+
+    public void desenhar(Graphics2D g2) { //Este método desenha o jogador na tela
+        BufferedImage imagem = null;
+
+        // Escolha da imagem conforme direção e ataque
+        switch (getDirecao()) {
+            case "up":
+                if (!isAtaque()) {
+                    imagem = (getNumSprite() == 1) ? getUp1() : getUp2();
+                } else {
+                    imagem = (getNumSprite() == 1) ? getAtaqueUp1() : getAtaqueUp2();
+                }
+                break;
+
+            case "down":
+                if (!isAtaque()) {
+                    imagem = (getNumSprite() == 1) ? getDown1() : getDown2();
+                } else {
+
+                    imagem = (getNumSprite() == 1) ? getAtaqueDown1() : getAtaqueDown2();
+                }
+                break;
+
+            case "left":
+                if (!isAtaque()) {
+                    imagem = (getNumSprite() == 1) ? getLeft1() : getLeft2();
+                } else {
+
+                    imagem = (getNumSprite() == 1) ? getAtaqueLeft1() : getAtaqueLeft2();
+                }
+                break;
+
+            case "right":
+                if (!isAtaque()) {
+                    imagem = (getNumSprite() == 1) ? getRight1() : getRight2();
+                } else {gp.playSE(2);
+
+                    imagem = (getNumSprite() == 1) ? getAtaqueRight1() : getAtaqueRight2();
+                }
+                break;
+        }
+
+        // Ajuste das posições para evitar que o personagem "saia" da tela
+        int x = telaX;
+        int y = telaY;
+
+        if (telaX > getMundoX()) {
+            x = getMundoX();
+        }
+        if (telaY > getMundoY()) {
+            y = getMundoY();
+        }
+        int rightOffset = gp.getTelaLargura() - telaX;
+        if (rightOffset > gp.getMundoLargura() - getMundoX()) {
+            x = gp.getTelaLargura() - (gp.getMundoLargura() - getMundoX());
+        }
+        int bottomOffset = gp.getTelaAltura() - telaY;
+        if (bottomOffset > gp.getMundoAltura() - getMundoY()) {
+            y = gp.getTelaAltura() - (gp.getMundoAltura() - getMundoY());
+        }
+
+        // Se estiver invisível, aplica transparência
+        if (isInvisibilidade()) {
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
+
+        // Desenha a imagem com tamanho correto conforme ataque e direção
+        if (isAtaque()) {
+            if (getDirecao().equals("up") || getDirecao().equals("down")) {
+                g2.drawImage(imagem, x, y, gp.getTamanhoBloco(), gp.getTamanhoBloco() * 2, null); // 32x64
+            } else {
+                g2.drawImage(imagem, x, y, gp.getTamanhoBloco() * 2, gp.getTamanhoBloco(), null); // 64x32
+            }
+        } else {
+            g2.drawImage(imagem, x, y, gp.getTamanhoBloco(), gp.getTamanhoBloco(), null);
+        }
+
+        // Reseta a opacidade para 100% (não transparente)
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+    }
+}

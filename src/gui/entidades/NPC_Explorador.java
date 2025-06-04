@@ -2,8 +2,6 @@ package gui.entidades;
 
 import gui.system.PainelJogo;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
 import java.util.Random;
 
 public class NPC_Explorador extends Entidade{
@@ -16,7 +14,7 @@ public class NPC_Explorador extends Entidade{
         super(gp);
         this.gp = gp;
 
-
+        setTipo(getTipo_npc());
         setDirecao("down");
         setVelocidade(1);
         carregarImagemExplorador();
@@ -25,18 +23,14 @@ public class NPC_Explorador extends Entidade{
 
 
     public void carregarImagemExplorador() {
-        try {
-            setUp1(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_up_1.png")));
-            setUp2(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_up_2.png")));
-            setDown1(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_down_1.png")));
-            setDown2(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_down_2.png")));
-            setLeft1(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_left_1.png")));
-            setLeft2(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_left_2.png")));
-            setRight1(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_right_1.png")));
-            setRight2(ImageIO.read(getClass().getResourceAsStream("/explorador/explorador_right_2.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setUp1(setup("/explorador/explorador_up_1", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setUp2(setup("/explorador/explorador_up_2", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setDown1(setup("/explorador/explorador_down_1", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setDown2(setup("/explorador/explorador_down_2", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setLeft1(setup("/explorador/explorador_left_1", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setLeft2(setup("/explorador/explorador_left_2", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setRight1(setup("/explorador/explorador_right_1", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
+        setRight2(setup("/explorador/explorador_right_2", gp.getTamanhoBloco(), gp.getTamanhoBloco()));
 
     }
 
